@@ -8,6 +8,7 @@ __pycache__/
 env/
 venv/
 ENV/
+.env
 
 # Database
 xtuff_collections.db

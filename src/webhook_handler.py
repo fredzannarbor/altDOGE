@@ -1,6 +1,13 @@
 import stripe
 import streamlit as st
-from src.database import Database
+import sys
+from typing import Dict, Any
+from pathlib import Path
+
+PROJECT_ROOT = Path(__file__).parent.resolve()
+sys.path.insert(0, str(PROJECT_ROOT))
+
+from database import Database
 import os
 
 class WebhookHandler:
