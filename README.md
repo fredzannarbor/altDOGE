@@ -5,25 +5,30 @@ AltDOGE democratizes AI in government by enabling "Bring Your Own Models" to the
 
 ### AltDOGE "First Steps" - **④**
 
-This release is a proof of concept to match [DOGE's regulatory reform initiative recently discussed in the Washington Post](https://wapo.st/45d5gqL).  In a nutshell, DOGE is using LLMs to analyze the Federal Register and cue it up for massive editing. They have a pretty simple process: assess whether the regulation is statutorily required and if it is not, whether the agency needs it anyway.**![](/Users/fred/Desktop/Screenshot 2025-07-27 at 16.43.01.png) **  I was able to simulate this in prompts.
+This release is a proof of concept to match [DOGE's regulatory reform initiative recently discussed in the Washington Post](https://wapo.st/45d5gqL).  In a nutshell, DOGE is using LLMs to analyze the Federal Register and cue it up for massive editing. They have a pretty simple process: assess whether the regulation is statutorily required and if it is not, whether the agency needs it anyway. I was able to simulate this in prompts.
 
-`{
+```
+{
   "DOGE Criteria": [
     "Analyze the following regulation text and categorize as Statutorily Required (SR), Not Statutorily Required (NSR), or Not Required but Agency Needs (NRAN). Provide a detailed justification citing statutory provisions if applicable:\n{text}",
     "Evaluate the following regulation for potential reform actions (deletion, simplification, harmonization, modernization). Suggest specific changes with justifications:\n{text}"]
-}`
+}
+```
 
 In future releases we can emulate how the agencies and stakeholders respond to the recommendations.
 
 I also (and this is the really cool part) demonstrated how an alternate strategy might interpret the same data with likely very different outcomes.
 
-`{"Congress Meant to Act Effectively": [
+```
+{
+"Congress Meant to Act Effectively": [
     "Statutory Alignment: Ensure the regulation fully implements the statutory requirements and intent, addressing all mandated objectives without omission.\n{text}",
     "Clarity and Accessibility: Enhance the regulation\u2019s language and structure to make its purpose and implentation strategy clear, concise, and understandable to the general public.\n{text}",
     "Outcome: Evaluate whether the regulation achieves the outcomes Congress intended in authorizing the regulation. Assume that Congress meant for agencies to act effectively in this domain.  Include expert assessment and public sentiment.\n{text}",
     "Adaptability to Modern Contexts: Identify opportunities to update the regulation so that the effective scope of the legislation fully adapts to current technological, economic, political and social conditions.\n{text}"
   ]
-}`
+}
+```
 
 ### AltDOGE Next Steps
 
