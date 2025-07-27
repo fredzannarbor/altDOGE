@@ -1,0 +1,1 @@
+# This file is deprecated and can be removed. run_altDOGE.py is the main entrypoint.
