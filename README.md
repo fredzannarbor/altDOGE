@@ -1,7 +1,37 @@
 # AltDOGE: An Open-Source Platform for Customizable Regulatory Reform
 
 ## Vision
-AltDOGE democratizes regulatory reform by providing an open-source platform for analyzing, proposing, and implementing diverse regulatory strategies. It leverages AI for regulatory analysis, supports human-in-the-loop workflows, and ensures extensibility for government agencies, legal professionals, and the public.
+AltDOGE democratizes AI in government by enabling "Bring Your Own Models" to the same data that the Department of Government Efficiency (DOGE) is analyzing with its large language models.  
+
+### AltDOGE "First Steps" - **④**
+
+This release is a proof of concept to match [DOGE's regulatory reform initiative recently discussed in the Washington Post](https://wapo.st/45d5gqL).  In a nutshell, DOGE is using LLMs to analyze the Federal Register and cue it up for massive editing. They have a pretty simple process: assess whether the regulation is statutorily required and if it is not, whether the agency needs it anyway.**![](/Users/fred/Desktop/Screenshot 2025-07-27 at 16.43.01.png) **  I was able to simulate this in prompts.
+`{
+  "DOGE Criteria": [
+    "Analyze the following regulation text and categorize as Statutorily Required (SR), Not Statutorily Required (NSR), or Not Required but Agency Needs (NRAN). Provide a detailed justification citing statutory provisions if applicable:\n{text}",
+    "Evaluate the following regulation for potential reform actions (deletion, simplification, harmonization, modernization). Suggest specific changes with justifications:\n{text}"]
+}`
+In future releases we can emulate how the agencies and stakeholders respond to the recommendations.
+
+I also (and this is the really cool part) demonstrated how an alternate strategy might interpret the same data with likely very different outcomes.
+
+`{"Congress Meant to Act Effectively": [
+    "Statutory Alignment: Ensure the regulation fully implements the statutory requirements and intent, addressing all mandated objectives without omission.\n{text}",
+    "Clarity and Accessibility: Enhance the regulation\u2019s language and structure to make its purpose and implentation strategy clear, concise, and understandable to the general public.\n{text}",
+    "Outcome: Evaluate whether the regulation achieves the outcomes Congress intended in authorizing the regulation. Assume that Congress meant for agencies to act effectively in this domain.  Include expert assessment and public sentiment.\n{text}",
+    "Adaptability to Modern Contexts: Identify opportunities to update the regulation so that the effective scope of the legislation fully adapts to current technological, economic, political and social conditions.\n{text}"
+  ]
+}`
+
+### AltDOGE Next Steps
+
+On a very specific level, some immediate practical steps that are essential to make this work:
+
+- validate that my DOGE prompt strategy yields same results against HUD data as DOGE's
+- sanity test my "Congress Meant It" strategy agains the same data
+- invite regulatory stakeholders to develop strategy suites, and test them against subsets organized by agency (sorted by agency most likely to be targeted next?)
+
+At a higher level, the AltDOGE vision is to let there be free and open competition in the analytic use of AI on government data.  By one SWAG, there are [approximately 5 billion tokens in the Federal Register.](https://grok.com/share/bGVnYWN5_d7fce4c0-f3bd-4739-bb78-6be6a3626bfe) There are comparably vast stores of other vital government data, including a whole-of-government data fusion effort currently only AI-accessible by DOGE. If we are to foreclose a potential AI-powered tyranny that might last "a thousand years", that imbalance must be remedied, and swiftly.    Neither I nor any ordinary individual can fund the expense of running millions of queries against billions of tokens, so **I strongly encourage high-net-worth individuals and frontier model operators to join me.**  The team to do this would involve a handful of AI-wrangling coders, data scientists, and policy networkers, plus a couple of months of my time to solve the main conceptual problems, get a system set up, and set it spinning. My email is wfzimmerman@gmail.com, my Signal is fredzannarbor.64.
 
 ## Features
 - **Multi-Page Web Application**: A Streamlit-based dashboard for all user interactions.
