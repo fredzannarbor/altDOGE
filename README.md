@@ -6,11 +6,13 @@ AltDOGE democratizes AI in government by enabling "Bring Your Own Models" to the
 ### AltDOGE "First Steps" - **④**
 
 This release is a proof of concept to match [DOGE's regulatory reform initiative recently discussed in the Washington Post](https://wapo.st/45d5gqL).  In a nutshell, DOGE is using LLMs to analyze the Federal Register and cue it up for massive editing. They have a pretty simple process: assess whether the regulation is statutorily required and if it is not, whether the agency needs it anyway.**![](/Users/fred/Desktop/Screenshot 2025-07-27 at 16.43.01.png) **  I was able to simulate this in prompts.
+
 `{
   "DOGE Criteria": [
     "Analyze the following regulation text and categorize as Statutorily Required (SR), Not Statutorily Required (NSR), or Not Required but Agency Needs (NRAN). Provide a detailed justification citing statutory provisions if applicable:\n{text}",
     "Evaluate the following regulation for potential reform actions (deletion, simplification, harmonization, modernization). Suggest specific changes with justifications:\n{text}"]
 }`
+
 In future releases we can emulate how the agencies and stakeholders respond to the recommendations.
 
 I also (and this is the really cool part) demonstrated how an alternate strategy might interpret the same data with likely very different outcomes.
