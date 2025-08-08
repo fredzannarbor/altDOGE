@@ -1,0 +1,4 @@
+agency_name,agency_slug,cfr_citation,parent_agency,active,document_count,query_successful,error_message,last_updated
+Office of the Comptroller of the Currency,office-of-the-comptroller-of-the-currency,12 CFR 100-199,Treasury Department,True,3,True,,2025-08-07T11:23:13.921933
+Small Business Administration,small-business-administration,13 CFR 200-299,Small Business Administration,True,64,True,,2025-08-07T11:23:13.921966
+Federal Aviation Administration,federal-aviation-administration,14 CFR 300-399,Transportation Department,True,64,True,,2025-08-07T11:23:13.921976

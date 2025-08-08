@@ -1,0 +1,41 @@
+{
+  "metadata": {
+    "session_id": "session_20250807_232418_4b00d514",
+    "exported_at": "2025-08-07T23:24:32.532764",
+    "total_documents": 1,
+    "export_format": "json",
+    "analyzer_version": "1.0.0"
+  },
+  "summary": {
+    "agency_name": "National Credit Union Administration",
+    "agency_slug": "national-credit-union-administration",
+    "total_documents": 1,
+    "successful_analyses": 1,
+    "success_rate": 100.0,
+    "total_processing_time": 13.809756994247437,
+    "average_processing_time": 13.809756994247437,
+    "category_breakdown": {
+      "UNKNOWN": 1
+    }
+  },
+  "results": [
+    {
+      "document_number": "2025-13627",
+      "title": "Renewal of Agency Information Collection of a Previously Approved Collection; Request for Comments",
+      "agency_slug": "national-credit-union-administration",
+      "publication_date": "2025-07-21",
+      "content_length": 5394,
+      "analysis": {
+        "prompt_strategy": "DOGE Criteria",
+        "category": "UNKNOWN",
+        "statutory_references": [],
+        "reform_recommendations": [],
+        "justification": "LLM response received but parsing failed due to format changes. This is a known issue with newer Gemini API responses.",
+        "success": true,
+        "error_message": null,
+        "processing_time": 13.809756994247437,
+        "created_at": "2025-08-08 03:24:32"
+      }
+    }
+  ]
+}

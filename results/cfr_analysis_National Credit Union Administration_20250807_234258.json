@@ -1,0 +1,41 @@
+{
+  "metadata": {
+    "session_id": "session_20250807_234238_099e0963",
+    "exported_at": "2025-08-07T23:42:58.239107",
+    "total_documents": 1,
+    "export_format": "json",
+    "analyzer_version": "1.0.0"
+  },
+  "summary": {
+    "agency_name": "National Credit Union Administration",
+    "agency_slug": "national-credit-union-administration",
+    "total_documents": 1,
+    "successful_analyses": 1,
+    "success_rate": 100.0,
+    "total_processing_time": 19.940773725509644,
+    "average_processing_time": 19.940773725509644,
+    "category_breakdown": {
+      "UNKNOWN": 1
+    }
+  },
+  "results": [
+    {
+      "document_number": "2025-13627",
+      "title": "Renewal of Agency Information Collection of a Previously Approved Collection; Request for Comments",
+      "agency_slug": "national-credit-union-administration",
+      "publication_date": "2025-07-21",
+      "content_length": 5394,
+      "analysis": {
+        "prompt_strategy": "DOGE Criteria",
+        "category": "UNKNOWN",
+        "statutory_references": [],
+        "reform_recommendations": [],
+        "justification": "Analysis failed: LLM analysis failed for document 2025-13627: LLM call failed with status error: litellm.APIConnectionError: GeminiException - Received={'candidates': [{'content': {'role': 'model'}, 'finishReason': 'MAX_TOKENS', 'index': 0, 'citationMetadata': {'citationSources': [{'startIndex': 1727, 'endIndex': 2073, 'uri': 'https://www.federalregister.gov/documents/2022/03/21/2022-05920/agency-information-collection-activities-proposed-collection-comment-request-ncua-template-large', 'license': ''}, {'startIndex': 5530, 'endIndex': 5829, 'uri': 'https://www.reginfo.gov/public/do/DownloadDocument?objectID=102318401', 'license': ''}, {'startIndex': 5848, 'endIndex': 6133, 'uri': 'https://www.reginfo.gov/public/do/DownloadDocument?objectID=102318401', 'license': ''}, {'startIndex': 6018, 'endIndex': 6395, 'uri': 'https://www.federalregister.gov/documents/2021/02/23/2020-28281/subordinated-debt', 'license': ''}, {'startIndex': 6443, 'endIndex': 6670, 'uri': 'https://casetext.com/federal-register/renewal-of-agency-information-collections-for-comments-request-proposed-collections-8', 'license': ''}, {'startIndex': 6934, 'endIndex': 7274, 'uri': 'https://www.federalregister.gov/documents/2021/02/23/2020-28281/subordinated-debt', 'license': ''}]}}], 'usageMetadata': {'promptTokenCount': 1321, 'totalTokenCount': 5320, 'promptTokensDetails': [{'modality': 'TEXT', 'tokenCount': 1321}], 'thoughtsTokenCount': 3999}, 'modelVersion': 'gemini-2.5-flash', 'responseId': 'QnKVaOLLDOuS1MkPwveW0Qk'}, Error converting to valid response block='parts'. File an issue if litellm error - https://github.com/BerriAI/litellm/issues",
+        "success": true,
+        "error_message": null,
+        "processing_time": 19.940773725509644,
+        "created_at": "2025-08-08 03:42:58"
+      }
+    }
+  ]
+}

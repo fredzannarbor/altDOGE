@@ -1,0 +1,45 @@
+================================================================================
+CFR AGENCY DOCUMENT COUNTER - SUMMARY REPORT
+================================================================================
+Generated: 2025-08-07 15:17:21
+Processing completed: 2025-08-07 15:17:21
+
+OVERALL STATISTICS
+----------------------------------------
+Total agencies processed: 283
+Successful queries: 282
+Failed queries: 1
+Success rate: 99.6%
+Execution time: 13982.5 seconds
+
+DOCUMENT STATISTICS
+----------------------------------------
+Agencies with documents: 282
+Agencies without documents: 0
+Total documents found: 15,923
+Average documents per agency (with docs): 56.5
+
+TOP 10 AGENCIES BY DOCUMENT COUNT
+----------------------------------------
+ 1. Food and Nutrition Service: 1,479 documents
+ 2. Administrative Conference of the United States: 64 documents
+ 3. Advocacy and Outreach Office: 64 documents
+ 4. Agency for Healthcare Research and Quality: 64 documents
+ 5. Agency for Toxic Substances and Disease Registry: 64 documents
+ 6. Aging Administration: 64 documents
+ 7. Agricultural Marketing Service: 64 documents
+ 8. Agricultural Research Service: 64 documents
+ 9. Agriculture Department: 64 documents
+10. Alcohol and Tobacco Tax and Trade Bureau: 64 documents
+
+FAILED QUERIES
+----------------------------------------
+Total failed: 1
+
+Error: Request failed: HTTPSConnectionPool(host='www.federalregister.gov', port=443): Read timed out. (read timeout=30)
+Affected agencies (1):
+  - Federal Crop Insurance Corporation
+
+================================================================================
+End of Report
+================================================================================

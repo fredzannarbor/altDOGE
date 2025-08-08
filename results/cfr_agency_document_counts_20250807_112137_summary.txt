@@ -1,0 +1,33 @@
+================================================================================
+CFR AGENCY DOCUMENT COUNTER - SUMMARY REPORT
+================================================================================
+Generated: 2025-08-07 11:21:37
+Processing completed: 2025-08-07 11:21:37
+
+OVERALL STATISTICS
+----------------------------------------
+Total agencies processed: 3
+Successful queries: 0
+Failed queries: 3
+Success rate: 0.0%
+Execution time: 0.3 seconds
+
+DOCUMENT STATISTICS
+----------------------------------------
+Agencies with documents: 0
+Agencies without documents: 0
+Total documents found: 0
+
+FAILED QUERIES
+----------------------------------------
+Total failed: 3
+
+Error: Unexpected error: Received HTML response - API may be rate limiting or blocking requests
+Affected agencies (3):
+  - Federal Aviation Administration
+  - Office of the Comptroller of the Currency
+  - Small Business Administration
+
+================================================================================
+End of Report
+================================================================================

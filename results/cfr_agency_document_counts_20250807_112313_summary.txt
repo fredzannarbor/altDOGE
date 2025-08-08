@@ -1,0 +1,30 @@
+================================================================================
+CFR AGENCY DOCUMENT COUNTER - SUMMARY REPORT
+================================================================================
+Generated: 2025-08-07 11:23:13
+Processing completed: 2025-08-07 11:23:13
+
+OVERALL STATISTICS
+----------------------------------------
+Total agencies processed: 3
+Successful queries: 3
+Failed queries: 0
+Success rate: 100.0%
+Execution time: 1.8 seconds
+
+DOCUMENT STATISTICS
+----------------------------------------
+Agencies with documents: 3
+Agencies without documents: 0
+Total documents found: 131
+Average documents per agency (with docs): 43.7
+
+TOP 10 AGENCIES BY DOCUMENT COUNT
+----------------------------------------
+ 1. Small Business Administration: 64 documents
+ 2. Federal Aviation Administration: 64 documents
+ 3. Office of the Comptroller of the Currency: 3 documents
+
+================================================================================
+End of Report
+================================================================================

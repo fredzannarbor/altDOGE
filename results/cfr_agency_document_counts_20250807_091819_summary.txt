@@ -1,0 +1,32 @@
+================================================================================
+CFR AGENCY DOCUMENT COUNTER - SUMMARY REPORT
+================================================================================
+Generated: 2025-08-07 09:18:19
+Processing completed: 2025-08-07 09:18:19
+
+OVERALL STATISTICS
+----------------------------------------
+Total agencies processed: 2
+Successful queries: 0
+Failed queries: 2
+Success rate: 0.0%
+Execution time: 0.4 seconds
+
+DOCUMENT STATISTICS
+----------------------------------------
+Agencies with documents: 0
+Agencies without documents: 0
+Total documents found: 0
+
+FAILED QUERIES
+----------------------------------------
+Total failed: 2
+
+Error: Unexpected error: Received HTML response - API may be rate limiting or blocking requests
+Affected agencies (2):
+  - Administrative Conference of the United States
+  - Administrative Office of United States Courts
+
+================================================================================
+End of Report
+================================================================================

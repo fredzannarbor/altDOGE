@@ -1,0 +1,52 @@
+================================================================================
+CFR AGENCY DOCUMENT COUNTER - SUMMARY REPORT
+================================================================================
+Generated: 2025-08-08 02:47:58
+Processing completed: 2025-08-08 02:47:58
+
+OVERALL STATISTICS
+----------------------------------------
+Total agencies processed: 283
+Successful queries: 283
+Failed queries: 0
+Success rate: 100.0%
+Execution time: 329.7 seconds
+
+DOCUMENT STATISTICS
+----------------------------------------
+Agencies with documents: 267
+Agencies without documents: 16
+Total documents found: 1,256,543
+Average documents per agency (with docs): 4706.2
+
+TOP 10 AGENCIES BY DOCUMENT COUNT
+----------------------------------------
+ 1. Health and Human Services Department: 106,451 documents
+ 2. Transportation Department: 97,305 documents
+ 3. Energy Department: 85,235 documents
+ 4. Commerce Department: 83,051 documents
+ 5. Federal Energy Regulatory Commission: 62,998 documents
+ 6. Environmental Protection Agency: 58,857 documents
+ 7. Securities and Exchange Commission: 57,984 documents
+ 8. Interior Department: 57,483 documents
+ 9. Federal Aviation Administration: 49,896 documents
+10. National Institutes of Health: 37,155 documents
+
+AGENCIES WITH ZERO DOCUMENTS
+----------------------------------------
+Total: 16
+  - Counsel to the President
+  - Energy Policy and New Uses Office
+  - Energy and Environmental Policy Office
+  - Family Assistance Office
+  - Foreign Service Impasse Disputes Panel
+  - Foreign Service Labor Relations Board
+  - Hearings and Appeals Office, Energy Department
+  - Inspector General Office, Health and Human Services Department
+  - International Joint Commission-United States and Canada
+  - International Organizations Employees Loyalty Board
+  ... and 6 more
+
+================================================================================
+End of Report
+================================================================================

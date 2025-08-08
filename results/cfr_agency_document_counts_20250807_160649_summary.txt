@@ -1,0 +1,37 @@
+================================================================================
+CFR AGENCY DOCUMENT COUNTER - SUMMARY REPORT
+================================================================================
+Generated: 2025-08-07 16:06:49
+Processing completed: 2025-08-07 16:06:49
+
+OVERALL STATISTICS
+----------------------------------------
+Total agencies processed: 10
+Successful queries: 10
+Failed queries: 0
+Success rate: 100.0%
+Execution time: 54.5 seconds
+
+DOCUMENT STATISTICS
+----------------------------------------
+Agencies with documents: 10
+Agencies without documents: 0
+Total documents found: 538
+Average documents per agency (with docs): 53.8
+
+TOP 10 AGENCIES BY DOCUMENT COUNT
+----------------------------------------
+ 1. Administrative Conference of the United States: 64 documents
+ 2. Advocacy and Outreach Office: 64 documents
+ 3. Agency for Healthcare Research and Quality: 64 documents
+ 4. Agency for Toxic Substances and Disease Registry: 64 documents
+ 5. Aging Administration: 64 documents
+ 6. Agricultural Marketing Service: 64 documents
+ 7. Agricultural Research Service: 64 documents
+ 8. Agriculture Department: 64 documents
+ 9. Administrative Office of United States Courts: 19 documents
+10. Air Quality National Commission: 7 documents
+
+================================================================================
+End of Report
+================================================================================

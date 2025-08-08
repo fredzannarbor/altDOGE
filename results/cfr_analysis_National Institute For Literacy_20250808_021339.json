@@ -1,0 +1,113 @@
+{
+  "metadata": {
+    "session_id": "session_20250808_021223_f9b90a2b",
+    "exported_at": "2025-08-08T02:13:39.453826",
+    "total_documents": 5,
+    "export_format": "json",
+    "analyzer_version": "1.0.0"
+  },
+  "summary": {
+    "agency_name": "National Institute For Literacy",
+    "agency_slug": "national-institute-for-literacy",
+    "total_documents": 5,
+    "successful_analyses": 5,
+    "success_rate": 100.0,
+    "total_processing_time": 76.23392057418823,
+    "average_processing_time": 15.246784114837647,
+    "category_breakdown": {
+      "UNKNOWN": 5
+    }
+  },
+  "results": [
+    {
+      "document_number": "E9-15728",
+      "title": "Waiver for the Literacy Information and Communication (LINCS) Resource Collections and Regional Resource Centers",
+      "agency_slug": "national-institute-for-literacy",
+      "publication_date": "2009-07-06",
+      "content_length": 8568,
+      "analysis": {
+        "prompt_strategy": "DOGE Criteria",
+        "category": "UNKNOWN",
+        "statutory_references": [],
+        "reform_recommendations": [],
+        "justification": "```json\n[\n  {\n    \"CATEGORY\": \"NRAN\",\n    \"STATUTORY_REFERENCES\": [\n      \"20 U.S.C. 9252(a) (Adult Education and Family Literacy Act - AEFLA, establishing NIFL)\",\n      \"20 U.S.C. 9252(c)(1)(A) (NIFL responsibilities, e.g., national electronic database)\",\n      \"20 U.S.C. 9295 (Administrative provisions, authorizing waiver of EDGAR)\",\n      \"34 CFR 75.261(c)(2) (Education Department General Administrative Regulations provision being waived)\",\n      \"31 U.S.C. 1552(a) (Account closing provisions, mentioned as not affected by waiver)\"\n    ],\n    \"REFORM_RECOMMENDATIONS\": [\n      \"Modernization: Develop and implement legislative frameworks that provide clearer, more robust mechanisms for program continuity during periods of legislative reauthorization or agency transition. This would reduce the reliance on ad-hoc waivers to prevent service lapses.\",\n      \"Harmonization: Ensure that general administrative regulations (like EDGAR) and specific program authorities are harmonized to allow for necessary flexibility in exceptional circumstances, without requiring frequent, specific waivers for critical operational needs.\"\n    ],\n    \"JUSTIFICATION\": \"This regulation is a 'Notice of waiver' issued by the National Institute for Literacy (NIFL). It waives specific requirements in 34 CFR 75.261(c)(2) of the Education Department General Administrative Regulations (EDGAR) to allow current LINCS grantees to continue receiving federal funding beyond their original performance period. The authority for this waiver is explicitly granted by 20 U.S.C. 9295, which permits the NIFL Director to waive EDGAR provisions deemed unnecessary for the administration of the title. \\n\\nThe regulation is categorized as NRAN (Not Required but Agency Needs) because while the waiver itself is not statutorily *required* (the statute *permits* it), it was deemed *necessary* for agency operations. The stated purpose is to 'avoid a lapse in the availability of services provided by current LINCS grantees' due to legislative uncertainty surrounding NIFL's future funding and the reauthorization of the Workforce Investment Act. This demonstrates a clear operational need to maintain critical program services during a period of transition and uncertainty. \\n\\nReform recommendations focus on the systemic issues that necessitate such waivers. Modernizing legislative frameworks to include clearer provisions for program continuity during reauthorization periods would provide greater stability for grantees and beneficiaries, reducing reliance on ad-hoc waivers. Harmonizing general administrative regulations with specific program needs could also streamline operations and reduce the administrative burden of frequent waiver requests.\"\n  }\n]\n```",
+        "success": true,
+        "error_message": null,
+        "processing_time": 20.73528289794922,
+        "created_at": "2025-08-08 06:12:43"
+      }
+    },
+    {
+      "document_number": "E8-28719",
+      "title": "National Institute for Literacy Advisory Board",
+      "agency_slug": "national-institute-for-literacy",
+      "publication_date": "2008-12-04",
+      "content_length": 3981,
+      "analysis": {
+        "prompt_strategy": "DOGE Criteria",
+        "category": "UNKNOWN",
+        "statutory_references": [],
+        "reform_recommendations": [],
+        "justification": "```json\n[\n  {\n    \"CATEGORY\": \"SR\",\n    \"STATUTORY_REFERENCES\": [\n      \"Federal Advisory Committee Act (FACA), Section 10(a)(2)\",\n      \"Workforce Investment Act of 1998, Public Law 105-220, Section 242 (20 U.S.C. 9252)\",\n      \"Government in the Sunshine Act, 5 U.S.C. 552b(c)(2) and (6)\"\n    ],\n    \"REFORM_RECOMMENDATIONS\": [\n      \"Modernization of Access Information: Update references to outdated platforms like 'GPO Access' to current equivalents (e.g., govinfo.gov) for accessing Federal Register documents.\",\n      \"Simplification of Contact Methods: While comprehensive, streamline the preferred methods for public comment, emphasizing digital submissions (email) over less efficient options (fax, physical mail) where appropriate, while still providing alternatives.\",\n      \"Clarity on Digital Tools: Re-evaluate the necessity of detailed instructions for using PDF readers; a simple link to a free reader might suffice, assuming general digital literacy.\"\n    ],\n    \"JUSTIFICATION\": \"This regulation, a 'Notice of a Closed Teleconference Meeting,' is categorized as Statutorily Required (SR) because the text explicitly states: 'Notice of this meeting is required by Section 10(a)(2) of the Federal Advisory Committee Act.' This direct statutory mandate necessitates the publication of such a notice for any meeting of a federal advisory committee.\\n\\nThe National Institute for Literacy Advisory Board itself is authorized by Section 242 of the Workforce Investment Act of 1998 (20 U.S.C. 9252). For this statutorily established board to fulfill its functions, including advising on the appointment of the Director, it must convene meetings. The Federal Advisory Committee Act (FACA) governs the transparency and public notice requirements for these meetings.\\n\\nFurthermore, the decision to hold a closed session is justified by specific exemptions under the Government in the Sunshine Act (5 U.S.C. 552b(c)(2) and (6)), demonstrating adherence to statutory provisions that balance public transparency with necessary privacy protections, particularly concerning personnel matters. The reform recommendations focus on modernizing the delivery and accessibility of this statutorily required information, rather than questioning the requirement itself.\"\n  }\n]\n```",
+        "success": true,
+        "error_message": null,
+        "processing_time": 14.04088282585144,
+        "created_at": "2025-08-08 06:12:57"
+      }
+    },
+    {
+      "document_number": "E8-25822",
+      "title": "National Institute for Literacy Advisory Board",
+      "agency_slug": "national-institute-for-literacy",
+      "publication_date": "2008-10-29",
+      "content_length": 4022,
+      "analysis": {
+        "prompt_strategy": "DOGE Criteria",
+        "category": "UNKNOWN",
+        "statutory_references": [],
+        "reform_recommendations": [],
+        "justification": "```json\n[\n  {\n    \"CATEGORY\": \"SR\",\n    \"STATUTORY_REFERENCES\": [\n      \"Federal Advisory Committee Act (FACA), Section 10(a)(2)\",\n      \"Workforce Investment Act of 1998, Public Law 105-220, Section 242 (20 U.S.C. 9252)\",\n      \"Government in the Sunshine Act, 5 U.S.C. 552b(c)(2) and (6)\"\n    ],\n    \"REFORM_RECOMMENDATIONS\": [\n      \"Deletion/Obsoletion: All regulations, notices, and guidance pertaining to the National Institute for Literacy Advisory Board should be formally deleted or marked as obsolete.\",\n      \"Harmonization: Ensure that the Code of Federal Regulations and agency policies are updated to reflect the repeal of the Workforce Investment Act of 1998 and the abolition of the National Institute for Literacy and its Advisory Board.\"\n    ],\n    \"JUSTIFICATION\": \"The regulation, a notice of a meeting, is explicitly statutorily required under Section 10(a)(2) of the Federal Advisory Committee Act (FACA), which mandates public notice for advisory committee meetings. Furthermore, the National Institute for Literacy Advisory Board itself was authorized by Section 242 of the Workforce Investment Act of 1998 (20 U.S.C. 9252). The notice also references the Government in the Sunshine Act (5 U.S.C. 552b(c)(2) and (6)) for the closed session, indicating compliance with statutory requirements for meeting transparency and exceptions. Therefore, the notice and the underlying board's operations were directly mandated or authorized by specific statutory language, classifying it as SR.\\n\\nHowever, the Workforce Innovation and Opportunity Act (WIOA) of 2014 (Public Law 113-128) repealed the Workforce Investment Act of 1998. Specifically, Section 511(a)(1) of WIOA repealed subtitle C of title II of WIA, which included Section 242 (20 U.S.C. 9252) that authorized the National Institute for Literacy and its Advisory Board. Consequently, the National Institute for Literacy and its Advisory Board ceased to exist. This renders any regulations, notices, or operational requirements pertaining to this defunct entity obsolete. The primary recommendation is the deletion or formal obsoletion of any such regulatory text from the Code of Federal Regulations or agency guidance to reflect the current statutory landscape and prevent confusion regarding non-existent entities.\"\n  }\n]\n```",
+        "success": true,
+        "error_message": null,
+        "processing_time": 13.309984922409058,
+        "created_at": "2025-08-08 06:13:11"
+      }
+    },
+    {
+      "document_number": "E8-24063",
+      "title": "National Institute for Literacy Advisory Board",
+      "agency_slug": "national-institute-for-literacy",
+      "publication_date": "2008-10-09",
+      "content_length": 5087,
+      "analysis": {
+        "prompt_strategy": "DOGE Criteria",
+        "category": "UNKNOWN",
+        "statutory_references": [],
+        "reform_recommendations": [],
+        "justification": "```json\n[\n  {\n    \"CATEGORY\": \"SR\",\n    \"STATUTORY_REFERENCES\": [\n      \"Federal Advisory Committee Act (FACA), Section 10(a)(2) (5 U.S.C. App. 2 § 10(a)(2))\",\n      \"Workforce Investment Act of 1998, Section 242, Public Law 105-220 (20 U.S.C. 9252)\",\n      \"Government in the Sunshine Act, 5 U.S.C. 552b(c)(2)\",\n      \"Government in the Sunshine Act, 5 U.S.C. 552b(c)(6)\"\n    ],\n    \"REFORM_RECOMMENDATIONS\": [\n      \"Modernize electronic access links: Update outdated URLs (e.g., gpoaccess.gov to govinfo.gov) to ensure current public access to Federal Register documents.\",\n      \"Explore supplementary digital notification methods: While Federal Register publication is required, agencies could leverage email subscriptions, RSS feeds, or dedicated agency webpages for meeting notices to enhance public awareness and accessibility, without replacing the statutory publication requirement.\",\n      \"Standardize notice templates: Implement a more uniform template for FACA meeting notices across all agencies to improve clarity and ease of information consumption for the public.\"\n    ],\n    \"JUSTIFICATION\": \"This regulation text, a 'Notice of a partially closed meeting' for the National Institute for Literacy Advisory Board, is categorized as Statutorily Required (SR). The notice explicitly states its requirement by 'Section 10(a)(2) of the Federal Advisory Committee Act (FACA).' FACA mandates public notice for advisory committee meetings, ensuring transparency and public participation. The National Institute for Literacy Advisory Board itself is authorized by Section 242 of the Workforce Investment Act of 1998 (20 U.S.C. 9252), making its meetings and associated notices a direct consequence of statutory authorization. Furthermore, the justification for the partially closed session directly references exemptions 2 and 6 of the Government in the Sunshine Act (5 U.S.C. 552b(c)(2) and (6)), reinforcing the statutory basis for the meeting's conduct. Given these explicit statutory mandates for both the existence of the board, the requirement for public notice of its meetings, and the rules governing closed sessions, this regulation is clearly SR. Reform recommendations focus on modernization and accessibility improvements rather than deletion or major simplification, as the core requirement is statutory.\"\n  }\n]\n```",
+        "success": true,
+        "error_message": null,
+        "processing_time": 12.215171813964844,
+        "created_at": "2025-08-08 06:13:23"
+      }
+    },
+    {
+      "document_number": "E8-16029",
+      "title": "National Institute for Literacy Advisory Board",
+      "agency_slug": "national-institute-for-literacy",
+      "publication_date": "2008-07-15",
+      "content_length": 3921,
+      "analysis": {
+        "prompt_strategy": "DOGE Criteria",
+        "category": "UNKNOWN",
+        "statutory_references": [],
+        "reform_recommendations": [],
+        "justification": "```json\n[\n  {\n    \"CATEGORY\": \"SR\",\n    \"STATUTORY_REFERENCES\": [\n      \"Federal Advisory Committee Act (FACA), Section 10(a)(2) (5 U.S.C. App.)\",\n      \"Workforce Investment Act of 1998, Section 242 (Pub. L. 105-220; 20 U.S.C. 9252)\",\n      \"Government in the Sunshine Act, 5 U.S.C. 552b(c)(2)\",\n      \"Government in the Sunshine Act, 5 U.S.C. 552b(c)(6)\"\n    ],\n    \"REFORM_RECOMMENDATIONS\": [\n      \"Modernization: Ensure all electronic access links (e.g., to Federal Register, GPO Access) are current, persistent, and leverage modern web standards for accessibility and discoverability. Agencies should consider supplementing Federal Register notices with agency website announcements, RSS feeds, or email subscriptions for broader public awareness.\",\n      \"Simplification: While already concise, agencies could adopt a standardized, plain language template for meeting notices to enhance clarity and consistency across the federal government, making it easier for the public to quickly identify key information.\"\n    ],\n    \"JUSTIFICATION\": \"This regulation text, a notice of a closed meeting, is categorized as Statutorily Required (SR) because its publication is explicitly mandated by federal law. The notice states, 'Notice of this meeting is required by Section 10(a)(2) of the Federal Advisory Committee Act (FACA).' FACA (5 U.S.C. App.) governs the operations of federal advisory committees, including requirements for public notice of meetings. The National Institute for Literacy Advisory Board itself is authorized by Section 242 of the Workforce Investment Act of 1998 (20 U.S.C. 9252), making it subject to FACA. Furthermore, the decision to hold a closed session is justified by specific statutory exemptions (5 U.S.C. 552b(c)(2) and (6)) under the Government in the Sunshine Act, which dictates when agency meetings can be closed to the public. Thus, the entire content, from the requirement to publish the notice to the justification for the closed session, is directly compelled by statutory provisions, leaving no discretion for the agency regarding its issuance.\"\n  }\n]\n```",
+        "success": true,
+        "error_message": null,
+        "processing_time": 15.932598114013672,
+        "created_at": "2025-08-08 06:13:39"
+      }
+    }
+  ]
+}

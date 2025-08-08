@@ -1,0 +1,9 @@
+Document Number,Title,Agency,Publication Date,Content Length,Category,Statutory References Count,Statutory References,Reform Recommendations Count,Analysis Success,Processing Time (s)
+2024-12345,Credit Union Capital Requirements,National Credit Union Administration,2024-01-15,2500,SR,2,12 U.S.C. 1751|12 U.S.C. 1790d,1,Yes,3.20
+2024-67890,Member Business Lending Rules,National Credit Union Administration,2024-02-20,1800,NSR,0,,2,Yes,2.10
+2024-11111,Supervisory Committee Audits,National Credit Union Administration,2024-03-10,1200,NRAN,1,12 U.S.C. 1761d,0,Yes,1.85
+2024-22222,Field of Membership Expansion,National Credit Union Administration,2024-04-05,3200,UNKNOWN,0,,1,No,0.50
+2024-33333,Share Insurance Coverage,National Credit Union Administration,2024-05-12,2100,SR,3,12 U.S.C. 1781|12 U.S.C. 1787|12 U.S.C. 1790d,2,Yes,2.75
+2024-44444,Electronic Transactions,National Credit Union Administration,2024-06-08,1650,NSR,1,15 U.S.C. 1693,3,Yes,1.95
+2024-55555,Prompt Corrective Action,National Credit Union Administration,2024-07-22,2800,SR,2,12 U.S.C. 1790d|12 U.S.C. 1766,1,Yes,3.45
+2024-66666,Investment and Deposit Activities,National Credit Union Administration,2024-08-15,2200,NRAN,0,,2,Yes,2.30

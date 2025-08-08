@@ -1,0 +1,41 @@
+{
+  "metadata": {
+    "session_id": "session_20250808_030031_82fc9555",
+    "exported_at": "2025-08-08T03:00:40.793912",
+    "total_documents": 1,
+    "export_format": "json",
+    "analyzer_version": "1.0.0"
+  },
+  "summary": {
+    "agency_name": "Arctic Research Commission",
+    "agency_slug": "arctic-research-commission",
+    "total_documents": 1,
+    "successful_analyses": 1,
+    "success_rate": 100.0,
+    "total_processing_time": 9.702334880828857,
+    "average_processing_time": 9.702334880828857,
+    "category_breakdown": {
+      "UNKNOWN": 1
+    }
+  },
+  "results": [
+    {
+      "document_number": "2024-25860",
+      "title": "Request for Nominations",
+      "agency_slug": "arctic-research-commission",
+      "publication_date": "2024-11-07",
+      "content_length": 984,
+      "analysis": {
+        "prompt_strategy": "DOGE Criteria",
+        "category": "UNKNOWN",
+        "statutory_references": [],
+        "reform_recommendations": [],
+        "justification": "```json\n[\n  {\n    \"CATEGORY\": \"SR\",\n    \"STATUTORY REFERENCES\": [\n      \"Arctic Research and Policy Act of 1984 (Title I, Pub. L. 98-373)\",\n      \"Executive Order 12501, dated January 28, 1985\"\n    ],\n    \"REFORM RECOMMENDATIONS\": [\n      \"Modernization: While the core requirement for Federal Register publication must be maintained, explore digital solutions for automated generation and submission of such notices. This could involve a standardized online portal for all federal commission vacancy announcements that automatically feeds into the Federal Register system, reducing manual administrative burden and potential for error.\",\n      \"Harmonization: Review the process for publishing vacancy notices across various federal commissions to identify best practices and standardize procedures where feasible, ensuring consistency in public notification and accessibility.\",\n      \"Simplification: Ensure the language used in such notices is consistently clear, concise, and directly addresses the statutory requirements without unnecessary jargon.\"\n    ],\n    \"JUSTIFICATION\": \"This regulation is categorized as Statutorily Required (SR) because the text explicitly states it is published \\\"pursuant to public law\\\" and \\\"to comply with the aforesaid requirement.\\\" The summary further clarifies that \\\"any vacancy occurring in the membership of the Commission shall be filled, after notice of the vacancy is published in the Federal Register.\\\" The regulation itself cites the Arctic Research and Policy Act of 1984 (Title I, Pub. L. 98-373) as providing the authority for this notice and establishing the requirement. Therefore, the publication of this vacancy notice in the Federal Register is a direct mandate from statute, making it indispensable for fulfilling the legal requirements for filling Commission vacancies. Deletion or significant alteration of the core requirement for public notice would necessitate legislative action.\"\n  }\n]\n```",
+        "success": true,
+        "error_message": null,
+        "processing_time": 9.702334880828857,
+        "created_at": "2025-08-08 07:00:40"
+      }
+    }
+  ]
+}

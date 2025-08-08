@@ -1,0 +1,31 @@
+{
+  "metadata": {
+    "generated_at": "2025-08-07T08:37:59.116741",
+    "total_agencies": 1,
+    "successful_queries": 0,
+    "failed_queries": 1,
+    "agencies_with_documents": 0,
+    "agencies_without_documents": 0,
+    "total_documents": 0,
+    "execution_time_seconds": 0.395322,
+    "success_rate_percent": 0.0,
+    "processing_timestamp": "2025-08-07T08:37:59.116246"
+  },
+  "summary": "Processed 1 agencies in 0.4s\nSuccess rate: 0.0% (0/1)\nAgencies with documents: 0\nTotal documents found: 0",
+  "agencies": [
+    {
+      "agency": {
+        "name": "Office of the Comptroller of the Currency",
+        "slug": "office-of-the-comptroller-of-the-currency",
+        "cfr_citation": "12 CFR 100-199",
+        "parent_agency": "Treasury Department",
+        "active": true,
+        "description": "Banking regulation"
+      },
+      "document_count": 0,
+      "query_successful": false,
+      "error_message": "Unexpected error: Received HTML response - API may be rate limiting or blocking requests",
+      "last_updated": "2025-08-07T08:37:59.116239"
+    }
+  ]
+}

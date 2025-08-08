@@ -1,0 +1,45 @@
+{
+  "metadata": {
+    "generated_at": "2025-08-07T09:22:40.673579",
+    "total_agencies": 2,
+    "successful_queries": 0,
+    "failed_queries": 2,
+    "agencies_with_documents": 0,
+    "agencies_without_documents": 0,
+    "total_documents": 0,
+    "execution_time_seconds": 0.50911,
+    "success_rate_percent": 0.0,
+    "processing_timestamp": "2025-08-07T09:22:40.671227"
+  },
+  "summary": "Processed 2 agencies in 0.5s\nSuccess rate: 0.0% (0/2)\nAgencies with documents: 0\nTotal documents found: 0",
+  "agencies": [
+    {
+      "agency": {
+        "name": "Administrative Conference of the United States",
+        "slug": "administrative-conference-of-the-united-states",
+        "cfr_citation": "17 CFR",
+        "parent_agency": "Administrative Conference of the United States",
+        "active": true,
+        "description": "The Administrative Conference of the United States (ACUS) was established under the Administrative Conference Act (5 U.S.C. 591-96), as a permanent independent agency of the Federal Government. ACUS provides suitable arrangements through which Federal agencies, assisted by outside experts, may cooperatively study mutual problems, exchange information, and develop recommendations for action by proper authorities to the end that private rights may be fully protected and regulatory activities and o"
+      },
+      "document_count": 0,
+      "query_successful": false,
+      "error_message": "Unexpected error: Received HTML response - API may be rate limiting or blocking requests",
+      "last_updated": "2025-08-07T09:22:40.671193"
+    },
+    {
+      "agency": {
+        "name": "Administrative Office of United States Courts",
+        "slug": "administrative-office-of-united-states-courts",
+        "cfr_citation": "12 CFR",
+        "parent_agency": "Administrative Office of United States Courts",
+        "active": true,
+        "description": "Created in 1939, the Administrative Office of the United States Courts (AO) serves the federal Judiciary in carrying out its constitutional mission to provide equal justice under law. The AO is the central support entity for the Judicial Branch. It provides a wide range of administrative, legal, financial, management, program, and information technology services to the federal courts. The AO provides support and staff counsel to the Judicial Conference of the United States and its committees, an"
+      },
+      "document_count": 0,
+      "query_successful": false,
+      "error_message": "Unexpected error: Received HTML response - API may be rate limiting or blocking requests",
+      "last_updated": "2025-08-07T09:22:40.671213"
+    }
+  ]
+}

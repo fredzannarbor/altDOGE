@@ -1,0 +1,31 @@
+================================================================================
+CFR AGENCY DOCUMENT COUNTER - SUMMARY REPORT
+================================================================================
+Generated: 2025-08-07 08:37:59
+Processing completed: 2025-08-07 08:37:59
+
+OVERALL STATISTICS
+----------------------------------------
+Total agencies processed: 1
+Successful queries: 0
+Failed queries: 1
+Success rate: 0.0%
+Execution time: 0.4 seconds
+
+DOCUMENT STATISTICS
+----------------------------------------
+Agencies with documents: 0
+Agencies without documents: 0
+Total documents found: 0
+
+FAILED QUERIES
+----------------------------------------
+Total failed: 1
+
+Error: Unexpected error: Received HTML response - API may be rate limiting or blocking requests
+Affected agencies (1):
+  - Office of the Comptroller of the Currency
+
+================================================================================
+End of Report
+================================================================================

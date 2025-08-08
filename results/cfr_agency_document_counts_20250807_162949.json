@@ -1,0 +1,157 @@
+{
+  "metadata": {
+    "generated_at": "2025-08-07T16:29:49.364127",
+    "total_agencies": 10,
+    "successful_queries": 10,
+    "failed_queries": 0,
+    "agencies_with_documents": 10,
+    "agencies_without_documents": 0,
+    "total_documents": 44888,
+    "execution_time_seconds": 2.709886,
+    "success_rate_percent": 100.0,
+    "processing_timestamp": "2025-08-07T16:29:49.362353"
+  },
+  "summary": "Processed 10 agencies in 2.7s\nSuccess rate: 100.0% (10/10)\nAgencies with documents: 10\nTotal documents found: 44,888",
+  "agencies": [
+    {
+      "agency": {
+        "name": "Administrative Conference of the United States",
+        "slug": "administrative-conference-of-the-united-states",
+        "cfr_citation": "17 CFR",
+        "parent_agency": "Administrative Conference of the United States",
+        "active": true,
+        "description": "The Administrative Conference of the United States (ACUS) was established under the Administrative Conference Act (5 U.S.C. 591-96), as a permanent independent agency of the Federal Government. ACUS provides suitable arrangements through which Federal agencies, assisted by outside experts, may cooperatively study mutual problems, exchange information, and develop recommendations for action by proper authorities to the end that private rights may be fully protected and regulatory activities and o"
+      },
+      "document_count": 156,
+      "query_successful": true,
+      "error_message": null,
+      "last_updated": "2025-08-07T16:29:49.362308"
+    },
+    {
+      "agency": {
+        "name": "Administrative Office of United States Courts",
+        "slug": "administrative-office-of-united-states-courts",
+        "cfr_citation": "12 CFR",
+        "parent_agency": "Administrative Office of United States Courts",
+        "active": true,
+        "description": "Created in 1939, the Administrative Office of the United States Courts (AO) serves the federal Judiciary in carrying out its constitutional mission to provide equal justice under law. The AO is the central support entity for the Judicial Branch. It provides a wide range of administrative, legal, financial, management, program, and information technology services to the federal courts. The AO provides support and staff counsel to the Judicial Conference of the United States and its committees, an"
+      },
+      "document_count": 5,
+      "query_successful": true,
+      "error_message": null,
+      "last_updated": "2025-08-07T16:29:49.362322"
+    },
+    {
+      "agency": {
+        "name": "Advocacy and Outreach Office",
+        "slug": "advocacy-and-outreach-office",
+        "cfr_citation": "29 CFR",
+        "parent_agency": "Advocacy and Outreach Office",
+        "active": true,
+        "description": "USDA’s Office of Advocacy and Outreach was established by the 2008 Farm Bill to improve access to USDA programs and to improve the viability and profitability of small farms and ranches, beginning farmers and ranchers, and socially disadvantaged farmers or ranchers. As such, OAO is split into five key program areas: Socially disadvantaged farmers, small and beginning farmers and ranchers, Higher education institutions program, farm worker coordination, and community engagement."
+      },
+      "document_count": 32,
+      "query_successful": true,
+      "error_message": null,
+      "last_updated": "2025-08-07T16:29:49.362327"
+    },
+    {
+      "agency": {
+        "name": "Agency for Healthcare Research and Quality",
+        "slug": "agency-for-healthcare-research-and-quality",
+        "cfr_citation": "21 CFR",
+        "parent_agency": "Health and Human Services Department",
+        "active": true,
+        "description": "The Agency for Healthcare Policy and Research was renamed the Agency for Health Care Research and Quality (AHRQ) under the Healthcare Research and Quality Act of 1999 which amended Title IX of the Public Health Service Act (42 U.S.C. 299 et seq). AHRQ is the health services research arm of the U.S. Department of Health and Human Services (HHS). AHRQ is a home to research centers that specialize in major areas of health care research such as: quality improvement and patient safety, outcomes and e"
+      },
+      "document_count": 1522,
+      "query_successful": true,
+      "error_message": null,
+      "last_updated": "2025-08-07T16:29:49.362330"
+    },
+    {
+      "agency": {
+        "name": "Agency for Toxic Substances and Disease Registry",
+        "slug": "agency-for-toxic-substances-and-disease-registry",
+        "cfr_citation": "40 CFR",
+        "parent_agency": "Agency for Toxic Substances and Disease Registry",
+        "active": true,
+        "description": "In 1980, Congress created the Agency for Toxic Substances and Disease Registry (ATSDR) to implement the health-related sections of laws that protect the public from hazardous wastes and environmental spills of hazardous substances. The Comprehensive Environmental Response, Compensation, and Liability Act of 1980 (CERCLA), commonly known as the \"Superfund\" Act, provided the Congressional mandate to remove or clean up abandoned and inactive hazardous waste sites and to provide federal assistance i"
+      },
+      "document_count": 554,
+      "query_successful": true,
+      "error_message": null,
+      "last_updated": "2025-08-07T16:29:49.362333"
+    },
+    {
+      "agency": {
+        "name": "Aging Administration",
+        "slug": "aging-administration",
+        "cfr_citation": "21 CFR",
+        "parent_agency": "Aging Administration",
+        "active": true,
+        "description": "The Administration on Aging (AoA) was created under the Older Americans Act of 1965. The AoA is the Federal agency responsible for advancing the concerns and interests of older people and their caregivers. AoA works with and through the Aging Services Network to promote the development of a comprehensive and coordinated system of home and community-based long-term care that is responsive to the needs and preferences of older people and their family caregivers. AoA is part of the Department of He"
+      },
+      "document_count": 266,
+      "query_successful": true,
+      "error_message": null,
+      "last_updated": "2025-08-07T16:29:49.362336"
+    },
+    {
+      "agency": {
+        "name": "Agricultural Marketing Service",
+        "slug": "agricultural-marketing-service",
+        "cfr_citation": "49 CFR",
+        "parent_agency": "Agricultural Marketing Service",
+        "active": true,
+        "description": "The Agricultural Marketing Service (AMS) was established by the Secretary of Agriculture on April 2, 1972, under the authority of Reorganization Plan No. 2 of 1953 (5 U.S.C. app.) and other authorities. The Service administers standardization, grading, certification, market news, marketing orders, research and promotion, and regulatory programs. The Agricultural Marketing Service includes five commodity programs--Dairy, Fruit and Vegetable, Livestock and Seed, Poultry, and Cotton and Tobacco. Th"
+      },
+      "document_count": 5210,
+      "query_successful": true,
+      "error_message": null,
+      "last_updated": "2025-08-07T16:29:49.362338"
+    },
+    {
+      "agency": {
+        "name": "Agricultural Research Service",
+        "slug": "agricultural-research-service",
+        "cfr_citation": "40 CFR",
+        "parent_agency": "Agricultural Research Service",
+        "active": true,
+        "description": "The Agricultural Research Service (ARS) was established on November 2, 1953 under the Secretary of Agriculture’s Reorganization Plan No. 2 of 1953. ARS is the principal in-house research agency of the U.S. Department of Agriculture (USDA). ARS conducts research to develop and transfer solutions to agricultural problems of high national priority. It provides information access and dissemination to ensure high-quality safe food and other agricultural products; assess the nutritional needs of Ameri"
+      },
+      "document_count": 523,
+      "query_successful": true,
+      "error_message": null,
+      "last_updated": "2025-08-07T16:29:49.362339"
+    },
+    {
+      "agency": {
+        "name": "Agriculture Department",
+        "slug": "agriculture-department",
+        "cfr_citation": "40 CFR",
+        "parent_agency": "Agriculture Department",
+        "active": true,
+        "description": "The Department of Agriculture works to improve and maintain farm income and to develop and expand markets abroad for agricultural products. The Department helps to curb and cure poverty, hunger, and malnutrition. It works to enhance the environment and to maintain production capacity by helping landowners protect the soil, water, forests, and other natural resources. The Department, through inspection and grading services, safeguards and ensures standards of quality in the daily food supply. The"
+      },
+      "document_count": 36619,
+      "query_successful": true,
+      "error_message": null,
+      "last_updated": "2025-08-07T16:29:49.362341"
+    },
+    {
+      "agency": {
+        "name": "Air Quality National Commission",
+        "slug": "air-quality-national-commission",
+        "cfr_citation": "40 CFR",
+        "parent_agency": "Air Quality National Commission",
+        "active": false,
+        "description": "The National Commission on Air Quality was a 13 member Commission created by the 1977 Clean Air Act Amendments. The Commission was required to report to Congress on the effectiveness of that law and on alternative approaches to controlling air pollution, in time for the next Congressional revision of clean air legislation. NCAQ was terminated upon submission of its final report on March 3, 1981."
+      },
+      "document_count": 1,
+      "query_successful": true,
+      "error_message": null,
+      "last_updated": "2025-08-07T16:29:49.362342"
+    }
+  ]
+}

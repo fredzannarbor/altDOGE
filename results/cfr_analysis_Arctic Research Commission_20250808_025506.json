@@ -1,0 +1,41 @@
+{
+  "metadata": {
+    "session_id": "session_20250808_025452_7eba3a45",
+    "exported_at": "2025-08-08T02:55:06.227459",
+    "total_documents": 1,
+    "export_format": "json",
+    "analyzer_version": "1.0.0"
+  },
+  "summary": {
+    "agency_name": "Arctic Research Commission",
+    "agency_slug": "arctic-research-commission",
+    "total_documents": 1,
+    "successful_analyses": 1,
+    "success_rate": 100.0,
+    "total_processing_time": 13.342634916305542,
+    "average_processing_time": 13.342634916305542,
+    "category_breakdown": {
+      "UNKNOWN": 1
+    }
+  },
+  "results": [
+    {
+      "document_number": "2024-25860",
+      "title": "Request for Nominations",
+      "agency_slug": "arctic-research-commission",
+      "publication_date": "2024-11-07",
+      "content_length": 984,
+      "analysis": {
+        "prompt_strategy": "DOGE Criteria",
+        "category": "UNKNOWN",
+        "statutory_references": [],
+        "reform_recommendations": [],
+        "justification": "```json\n[\n  {\n    \"CATEGORY\": \"SR\",\n    \"STATUTORY_REFERENCES\": [\n      \"Arctic Research and Policy Act of 1984 (Title I, Pub. L. 98-373), specifically Section 103(b)(2) (codified at 15 U.S.C. § 4102(b)(2))\",\n      \"Presidential Executive Order 12501 (January 28, 1985) (cited as providing general authority for the Commission and notice, though the specific publication requirement stems from the Act)\"\n    ],\n    \"REFORM_RECOMMENDATIONS\": [\n      \"Deletion: Not recommended. This notice fulfills a direct statutory requirement for transparency in filling a public commission vacancy.\",\n      \"Simplification: Not applicable. The notice is already concise and provides only the statutorily required information.\",\n      \"Harmonization: Not applicable. This is a specific notice for a particular commission.\",\n      \"Modernization: While the method of publication (Federal Register) is statutorily mandated, any modernization to alternative notification methods (e.g., dedicated online portals) would require an amendment to 15 U.S.C. § 4102(b)(2). For this specific regulation (the notice itself), no further modernization is feasible without legislative change.\"\n    ],\n    \"JUSTIFICATION\": \"This regulation, a 'Notice of vacancy' for the Arctic Research Commission, is categorized as Statutorily Required (SR). The regulation text explicitly states it is 'pursuant to public law' and 'published to comply with the aforesaid requirement.' It directly cites the 'Arctic Research and Policy Act of 1984 (Title I, Pub. L. 98-373)' as providing the authority. Specifically, Section 103(b)(2) of the Act (15 U.S.C. § 4102(b)(2)) mandates that 'Any vacancy occurring in the membership of the Commission shall be filled, after notice of the vacancy is published in the Federal Register.' Therefore, the publication of this notice is a direct, non-discretionary requirement of federal statute. Reform recommendations are limited because the regulation merely fulfills a precise statutory mandate for public transparency in commission appointments.\"\n  }\n]\n```",
+        "success": true,
+        "error_message": null,
+        "processing_time": 13.342634916305542,
+        "created_at": "2025-08-08 06:55:06"
+      }
+    }
+  ]
+}

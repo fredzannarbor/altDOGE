@@ -1,0 +1,59 @@
+{
+  "metadata": {
+    "generated_at": "2025-08-07T11:23:13.925491",
+    "total_agencies": 3,
+    "successful_queries": 3,
+    "failed_queries": 0,
+    "agencies_with_documents": 3,
+    "agencies_without_documents": 0,
+    "total_documents": 131,
+    "execution_time_seconds": 1.795332,
+    "success_rate_percent": 100.0,
+    "processing_timestamp": "2025-08-07T11:23:13.921996"
+  },
+  "summary": "Processed 3 agencies in 1.8s\nSuccess rate: 100.0% (3/3)\nAgencies with documents: 3\nTotal documents found: 131",
+  "agencies": [
+    {
+      "agency": {
+        "name": "Office of the Comptroller of the Currency",
+        "slug": "office-of-the-comptroller-of-the-currency",
+        "cfr_citation": "12 CFR 100-199",
+        "parent_agency": "Treasury Department",
+        "active": true,
+        "description": "Banking regulation"
+      },
+      "document_count": 3,
+      "query_successful": true,
+      "error_message": null,
+      "last_updated": "2025-08-07T11:23:13.921933"
+    },
+    {
+      "agency": {
+        "name": "Small Business Administration",
+        "slug": "small-business-administration",
+        "cfr_citation": "13 CFR 200-299",
+        "parent_agency": "Small Business Administration",
+        "active": true,
+        "description": "Small business support"
+      },
+      "document_count": 64,
+      "query_successful": true,
+      "error_message": null,
+      "last_updated": "2025-08-07T11:23:13.921966"
+    },
+    {
+      "agency": {
+        "name": "Federal Aviation Administration",
+        "slug": "federal-aviation-administration",
+        "cfr_citation": "14 CFR 300-399",
+        "parent_agency": "Transportation Department",
+        "active": true,
+        "description": "Aviation regulation"
+      },
+      "document_count": 64,
+      "query_successful": true,
+      "error_message": null,
+      "last_updated": "2025-08-07T11:23:13.921976"
+    }
+  ]
+}

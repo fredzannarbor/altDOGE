@@ -1,0 +1,30 @@
+================================================================================
+CFR AGENCY DOCUMENT COUNTER - SUMMARY REPORT
+================================================================================
+Generated: 2025-08-07 16:18:36
+Processing completed: 2025-08-07 16:18:36
+
+OVERALL STATISTICS
+----------------------------------------
+Total agencies processed: 3
+Successful queries: 3
+Failed queries: 0
+Success rate: 100.0%
+Execution time: 15.8 seconds
+
+DOCUMENT STATISTICS
+----------------------------------------
+Agencies with documents: 3
+Agencies without documents: 0
+Total documents found: 147
+Average documents per agency (with docs): 49.0
+
+TOP 10 AGENCIES BY DOCUMENT COUNT
+----------------------------------------
+ 1. Administrative Conference of the United States: 64 documents
+ 2. Advocacy and Outreach Office: 64 documents
+ 3. Administrative Office of United States Courts: 19 documents
+
+================================================================================
+End of Report
+================================================================================

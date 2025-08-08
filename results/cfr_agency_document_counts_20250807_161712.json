@@ -1,0 +1,297 @@
+{
+  "metadata": {
+    "generated_at": "2025-08-07T16:17:12.500548",
+    "total_agencies": 20,
+    "successful_queries": 20,
+    "failed_queries": 0,
+    "agencies_with_documents": 20,
+    "agencies_without_documents": 0,
+    "total_documents": 965,
+    "execution_time_seconds": 34.105807,
+    "success_rate_percent": 100.0,
+    "processing_timestamp": "2025-08-07T16:17:12.496015"
+  },
+  "summary": "Processed 20 agencies in 34.1s\nSuccess rate: 100.0% (20/20)\nAgencies with documents: 20\nTotal documents found: 965",
+  "agencies": [
+    {
+      "agency": {
+        "name": "Administrative Conference of the United States",
+        "slug": "administrative-conference-of-the-united-states",
+        "cfr_citation": "17 CFR",
+        "parent_agency": "Administrative Conference of the United States",
+        "active": true,
+        "description": "The Administrative Conference of the United States (ACUS) was established under the Administrative Conference Act (5 U.S.C. 591-96), as a permanent independent agency of the Federal Government. ACUS provides suitable arrangements through which Federal agencies, assisted by outside experts, may cooperatively study mutual problems, exchange information, and develop recommendations for action by proper authorities to the end that private rights may be fully protected and regulatory activities and o"
+      },
+      "document_count": 64,
+      "query_successful": true,
+      "error_message": null,
+      "last_updated": "2025-08-07T16:17:12.495926"
+    },
+    {
+      "agency": {
+        "name": "Administrative Office of United States Courts",
+        "slug": "administrative-office-of-united-states-courts",
+        "cfr_citation": "12 CFR",
+        "parent_agency": "Administrative Office of United States Courts",
+        "active": true,
+        "description": "Created in 1939, the Administrative Office of the United States Courts (AO) serves the federal Judiciary in carrying out its constitutional mission to provide equal justice under law. The AO is the central support entity for the Judicial Branch. It provides a wide range of administrative, legal, financial, management, program, and information technology services to the federal courts. The AO provides support and staff counsel to the Judicial Conference of the United States and its committees, an"
+      },
+      "document_count": 19,
+      "query_successful": true,
+      "error_message": null,
+      "last_updated": "2025-08-07T16:17:12.495954"
+    },
+    {
+      "agency": {
+        "name": "Advocacy and Outreach Office",
+        "slug": "advocacy-and-outreach-office",
+        "cfr_citation": "29 CFR",
+        "parent_agency": "Advocacy and Outreach Office",
+        "active": true,
+        "description": "USDA’s Office of Advocacy and Outreach was established by the 2008 Farm Bill to improve access to USDA programs and to improve the viability and profitability of small farms and ranches, beginning farmers and ranchers, and socially disadvantaged farmers or ranchers. As such, OAO is split into five key program areas: Socially disadvantaged farmers, small and beginning farmers and ranchers, Higher education institutions program, farm worker coordination, and community engagement."
+      },
+      "document_count": 64,
+      "query_successful": true,
+      "error_message": null,
+      "last_updated": "2025-08-07T16:17:12.495959"
+    },
+    {
+      "agency": {
+        "name": "Agency for Healthcare Research and Quality",
+        "slug": "agency-for-healthcare-research-and-quality",
+        "cfr_citation": "21 CFR",
+        "parent_agency": "Health and Human Services Department",
+        "active": true,
+        "description": "The Agency for Healthcare Policy and Research was renamed the Agency for Health Care Research and Quality (AHRQ) under the Healthcare Research and Quality Act of 1999 which amended Title IX of the Public Health Service Act (42 U.S.C. 299 et seq). AHRQ is the health services research arm of the U.S. Department of Health and Human Services (HHS). AHRQ is a home to research centers that specialize in major areas of health care research such as: quality improvement and patient safety, outcomes and e"
+      },
+      "document_count": 64,
+      "query_successful": true,
+      "error_message": null,
+      "last_updated": "2025-08-07T16:17:12.495962"
+    },
+    {
+      "agency": {
+        "name": "Agency for Toxic Substances and Disease Registry",
+        "slug": "agency-for-toxic-substances-and-disease-registry",
+        "cfr_citation": "40 CFR",
+        "parent_agency": "Agency for Toxic Substances and Disease Registry",
+        "active": true,
+        "description": "In 1980, Congress created the Agency for Toxic Substances and Disease Registry (ATSDR) to implement the health-related sections of laws that protect the public from hazardous wastes and environmental spills of hazardous substances. The Comprehensive Environmental Response, Compensation, and Liability Act of 1980 (CERCLA), commonly known as the \"Superfund\" Act, provided the Congressional mandate to remove or clean up abandoned and inactive hazardous waste sites and to provide federal assistance i"
+      },
+      "document_count": 64,
+      "query_successful": true,
+      "error_message": null,
+      "last_updated": "2025-08-07T16:17:12.495966"
+    },
+    {
+      "agency": {
+        "name": "Aging Administration",
+        "slug": "aging-administration",
+        "cfr_citation": "21 CFR",
+        "parent_agency": "Aging Administration",
+        "active": true,
+        "description": "The Administration on Aging (AoA) was created under the Older Americans Act of 1965. The AoA is the Federal agency responsible for advancing the concerns and interests of older people and their caregivers. AoA works with and through the Aging Services Network to promote the development of a comprehensive and coordinated system of home and community-based long-term care that is responsive to the needs and preferences of older people and their family caregivers. AoA is part of the Department of He"
+      },
+      "document_count": 64,
+      "query_successful": true,
+      "error_message": null,
+      "last_updated": "2025-08-07T16:17:12.495969"
+    },
+    {
+      "agency": {
+        "name": "Agricultural Marketing Service",
+        "slug": "agricultural-marketing-service",
+        "cfr_citation": "49 CFR",
+        "parent_agency": "Agricultural Marketing Service",
+        "active": true,
+        "description": "The Agricultural Marketing Service (AMS) was established by the Secretary of Agriculture on April 2, 1972, under the authority of Reorganization Plan No. 2 of 1953 (5 U.S.C. app.) and other authorities. The Service administers standardization, grading, certification, market news, marketing orders, research and promotion, and regulatory programs. The Agricultural Marketing Service includes five commodity programs--Dairy, Fruit and Vegetable, Livestock and Seed, Poultry, and Cotton and Tobacco. Th"
+      },
+      "document_count": 64,
+      "query_successful": true,
+      "error_message": null,
+      "last_updated": "2025-08-07T16:17:12.495972"
+    },
+    {
+      "agency": {
+        "name": "Agricultural Research Service",
+        "slug": "agricultural-research-service",
+        "cfr_citation": "40 CFR",
+        "parent_agency": "Agricultural Research Service",
+        "active": true,
+        "description": "The Agricultural Research Service (ARS) was established on November 2, 1953 under the Secretary of Agriculture’s Reorganization Plan No. 2 of 1953. ARS is the principal in-house research agency of the U.S. Department of Agriculture (USDA). ARS conducts research to develop and transfer solutions to agricultural problems of high national priority. It provides information access and dissemination to ensure high-quality safe food and other agricultural products; assess the nutritional needs of Ameri"
+      },
+      "document_count": 64,
+      "query_successful": true,
+      "error_message": null,
+      "last_updated": "2025-08-07T16:17:12.495974"
+    },
+    {
+      "agency": {
+        "name": "Agriculture Department",
+        "slug": "agriculture-department",
+        "cfr_citation": "40 CFR",
+        "parent_agency": "Agriculture Department",
+        "active": true,
+        "description": "The Department of Agriculture works to improve and maintain farm income and to develop and expand markets abroad for agricultural products. The Department helps to curb and cure poverty, hunger, and malnutrition. It works to enhance the environment and to maintain production capacity by helping landowners protect the soil, water, forests, and other natural resources. The Department, through inspection and grading services, safeguards and ensures standards of quality in the daily food supply. The"
+      },
+      "document_count": 64,
+      "query_successful": true,
+      "error_message": null,
+      "last_updated": "2025-08-07T16:17:12.495976"
+    },
+    {
+      "agency": {
+        "name": "Air Quality National Commission",
+        "slug": "air-quality-national-commission",
+        "cfr_citation": "40 CFR",
+        "parent_agency": "Air Quality National Commission",
+        "active": false,
+        "description": "The National Commission on Air Quality was a 13 member Commission created by the 1977 Clean Air Act Amendments. The Commission was required to report to Congress on the effectiveness of that law and on alternative approaches to controlling air pollution, in time for the next Congressional revision of clean air legislation. NCAQ was terminated upon submission of its final report on March 3, 1981."
+      },
+      "document_count": 7,
+      "query_successful": true,
+      "error_message": null,
+      "last_updated": "2025-08-07T16:17:12.495978"
+    },
+    {
+      "agency": {
+        "name": "Air Transportation Stabilization Board",
+        "slug": "air-transportation-stabilization-board",
+        "cfr_citation": "49 CFR",
+        "parent_agency": "Air Transportation Stabilization Board",
+        "active": true,
+        "description": "On September 22, 2001, President Bush signed into law the Air Transportation Safety and System Stabilization Act (\"Act\") (Public Law 107-42). The Act establishes the Air Transportation Stabilization Board (\"Board\"). The Board may issue up to $10 billion in Federal credit instruments, e.g. (loan guarantees)."
+      },
+      "document_count": 10,
+      "query_successful": true,
+      "error_message": null,
+      "last_updated": "2025-08-07T16:17:12.495981"
+    },
+    {
+      "agency": {
+        "name": "Alaska Power Administration",
+        "slug": "alaska-power-administration",
+        "cfr_citation": "10 CFR",
+        "parent_agency": "Alaska Power Administration",
+        "active": false,
+        "description": "The Alaska Power Administration was established by the Secretary of the Interior in 1967. The Administration was abolished and its responsibilities transferred to the Department of Energy by act of August 4, 1977 (91 Stat. 578)."
+      },
+      "document_count": 31,
+      "query_successful": true,
+      "error_message": null,
+      "last_updated": "2025-08-07T16:17:12.495984"
+    },
+    {
+      "agency": {
+        "name": "Alcohol and Tobacco Tax and Trade Bureau",
+        "slug": "alcohol-and-tobacco-tax-and-trade-bureau",
+        "cfr_citation": "34 CFR",
+        "parent_agency": "Alcohol and Tobacco Tax and Trade Bureau",
+        "active": true,
+        "description": "The Alcohol and Tobacco Tax and Trade Bureau, statutorily named the Tax and Trade Bureau (TTB) was established under the Homeland Security Act of 2002 (the Act) on January 24, 2003. Rendering the functions of the Bureau of Alcohol, Tobacco and Firearms (ATF) into two new organizations with separate functions, the Act created a new tax and trade bureau within the Department of the Treasury, and shifted certain law enforcement functions of ATF to the Department of Justice. The Act called for the t"
+      },
+      "document_count": 64,
+      "query_successful": true,
+      "error_message": null,
+      "last_updated": "2025-08-07T16:17:12.495985"
+    },
+    {
+      "agency": {
+        "name": "Alcohol, Tobacco, Firearms, and Explosives Bureau",
+        "slug": "alcohol-tobacco-firearms-and-explosives-bureau",
+        "cfr_citation": "10 CFR",
+        "parent_agency": "Alcohol, Tobacco, Firearms, and Explosives Bureau",
+        "active": false,
+        "description": "The Bureau of Alcohol, Tobacco, Firearms and Explosives (ATF) is responsible for enforcing Federal criminal laws and regulating the firearms and explosives industries. ATF, formerly known as the Bureau of Alcohol, Tobacco, and Firearms, was initially established by Department of Treasury Order No. 221, effective July 1, 1972, which transferred the functions, powers, and duties arising under laws relating to alcohol, tobacco, firearms, and explosives from the Internal Revenue Service to ATF. The"
+      },
+      "document_count": 64,
+      "query_successful": true,
+      "error_message": null,
+      "last_updated": "2025-08-07T16:17:12.495987"
+    },
+    {
+      "agency": {
+        "name": "Amtrak Reform Council",
+        "slug": "amtrak-reform-council",
+        "cfr_citation": "49 CFR",
+        "parent_agency": "Amtrak Reform Council",
+        "active": false,
+        "description": "The Amtrak Reform Council was an independent bipartisan Federal commission established under the Amtrak Reform and Accountability Act of 1997 (P.L. 105-134). The Council consisted of eleven members whose statutory mandate was to make recommendations to Amtrak in order to help it reach operational self-sufficiency, and to report annually to Congress on Amtrak's performance. On February 7, 2002, the Council released to Congress its Action Plan for the Restructuring and Rationalization of the Natio"
+      },
+      "document_count": 46,
+      "query_successful": true,
+      "error_message": null,
+      "last_updated": "2025-08-07T16:17:12.495989"
+    },
+    {
+      "agency": {
+        "name": "Animal and Plant Health Inspection Service",
+        "slug": "animal-and-plant-health-inspection-service",
+        "cfr_citation": "40 CFR",
+        "parent_agency": "Health and Human Services Department",
+        "active": true,
+        "description": "The Animal and Plant Health Inspection Service was reestablished by the Secretary of Agriculture on March 14, 1977, pursuant to authority contained in 5 U.S.C. 301 and Reorganization Plan No. 2 of 1953 (5 U.S.C. app.). The Service was established to conduct regulatory and control programs to protect and improve animal and plant health for the benefit of man and the environment. In cooperation with State governments, the agency administers Federal laws and regulations pertaining to animal and pla"
+      },
+      "document_count": 64,
+      "query_successful": true,
+      "error_message": null,
+      "last_updated": "2025-08-07T16:17:12.495992"
+    },
+    {
+      "agency": {
+        "name": "Antitrust Division",
+        "slug": "antitrust-division",
+        "cfr_citation": "12 CFR",
+        "parent_agency": "Antitrust Division",
+        "active": true,
+        "description": "The Assistant Attorney General in charge of the Antitrust Division is responsible for promoting and maintaining competitive markets by enforcing the Federal antitrust laws. This involves investigating possible antitrust violations, conducting grand jury proceedings, reviewing proposed mergers and acquisitions, preparing and trying antitrust cases, prosecuting appeals, and negotiating and enforcing final judgments. The Division prosecutes serious and willful violations of antitrust laws by filing"
+      },
+      "document_count": 64,
+      "query_successful": true,
+      "error_message": null,
+      "last_updated": "2025-08-07T16:17:12.495994"
+    },
+    {
+      "agency": {
+        "name": "Appalachian Regional Commission",
+        "slug": "appalachian-regional-commission",
+        "cfr_citation": "49 CFR",
+        "parent_agency": "Appalachian Regional Commission",
+        "active": true,
+        "description": "The Appalachian Regional Commission (ARC) is a regional economic development agency that represents a partnership of federal, state, and local government. Established by an act of Congress in 1965, ARC is composed of the governors of the 13 Appalachian states and a federal co-chair, who is appointed by the president. Local participation is provided through multi-county local development districts. ARC funds projects that address the four goals identified in the Commission's strategic plan: (1) I"
+      },
+      "document_count": 13,
+      "query_successful": true,
+      "error_message": null,
+      "last_updated": "2025-08-07T16:17:12.495997"
+    },
+    {
+      "agency": {
+        "name": "Architect of the Capitol",
+        "slug": "architect-of-the-capitol",
+        "cfr_citation": "10 CFR",
+        "parent_agency": "Architect of the Capitol",
+        "active": true,
+        "description": "The Architect of the Capitol is responsible for the care and maintenance of the U.S. Capitol and the buildings and grounds of the Capitol complex. The agency implements construction, renovation, conservation, and landscape improvement projects as authorized by the Congress. The Architect of the Capitol is charged with operating and maintaining the buildings of the Capitol complex committed to his care by Congress. Permanent authority for the care and maintenance of the Capitol was established by"
+      },
+      "document_count": 7,
+      "query_successful": true,
+      "error_message": null,
+      "last_updated": "2025-08-07T16:17:12.495999"
+    },
+    {
+      "agency": {
+        "name": "Architectural and Transportation Barriers Compliance Board",
+        "slug": "architectural-and-transportation-barriers-compliance-board",
+        "cfr_citation": "40 CFR",
+        "parent_agency": "Architectural and Transportation Barriers Compliance Board",
+        "active": true,
+        "description": "The Access Board is an independent Federal agency devoted to accessibility for people with disabilities. Created in 1973 to ensure access to federally funded facilities, the Board is now a leading source of information on accessible design. The Board develops and maintains design criteria for the built environment, transit vehicles, telecommunications equipment, and for electronic and information technology. It also provides technical assistance and training on these requirements and on accessib"
+      },
+      "document_count": 64,
+      "query_successful": true,
+      "error_message": null,
+      "last_updated": "2025-08-07T16:17:12.496001"
+    }
+  ]
+}

@@ -1,0 +1,2 @@
+Document Number,Title,Agency,Publication Date,Content Length,Category,Statutory References Count,Reform Recommendations Count,Analysis Success,Processing Time (s),Justification Preview
+2025-13627,Renewal of Agency Information Collection of a Previously Approved Collection; Request for Comments,National Credit Union Administration,2025-07-21,5394,UNKNOWN,0,0,Yes,19.94,"Analysis failed: LLM analysis failed for document 2025-13627: LLM call failed with status error: litellm.APIConnectionError: GeminiException - Received={'candidates': [{'content': {'role': 'model'}, '..."

@@ -1,0 +1,36 @@
+================================================================================
+CFR AGENCY DOCUMENT COUNTER - SUMMARY REPORT
+================================================================================
+Generated: 2025-08-07 16:07:11
+Processing completed: 2025-08-07 16:07:11
+
+OVERALL STATISTICS
+----------------------------------------
+Total agencies processed: 10
+Successful queries: 0
+Failed queries: 10
+Success rate: 0.0%
+Execution time: 0.4 seconds
+
+DOCUMENT STATISTICS
+----------------------------------------
+Agencies with documents: 0
+Agencies without documents: 0
+Total documents found: 0
+
+FAILED QUERIES
+----------------------------------------
+Total failed: 10
+
+Error: Unexpected error: Received HTML response - API may be rate limiting or blocking requests
+Affected agencies (10):
+  - Administrative Conference of the United States
+  - Administrative Office of United States Courts
+  - Advocacy and Outreach Office
+  - Agency for Healthcare Research and Quality
+  - Agency for Toxic Substances and Disease Registry
+  ... and 5 more
+
+================================================================================
+End of Report
+================================================================================
