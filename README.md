@@ -5,7 +5,7 @@ AltDOGE democratizes AI in government by enabling "Bring Your Own Models" to the
 
 ### Latest - 8/8/2025
 
-Ran v0.2.0 against 485 documents in the Community Living Administration's section of the CFR at a cost of ~$5 using gemini-2.5-flash. Analyzed all 485 docs using prompts similar to DOGE.
+Ran v0.2.0 against 485 documents in the Community Living Administration's section of the CFR at a cost of ~$5 using gemini-2.5-flash. Analyzed all 485 docs using prompts similar to DOGE.  Results:
 
 <img width="907" height="1027" alt="Screenshot 2025-08-09 at 04 37 47" src="https://github.com/user-attachments/assets/7ce76cab-db5a-4eea-9ac7-2bec9ae7c994" />
 
