@@ -3,6 +3,15 @@
 ## Vision
 AltDOGE democratizes AI in government by enabling "Bring Your Own Models" to the same data that the Department of Government Efficiency (DOGE) is analyzing with its large language models.  
 
+### Latest - 8/8/2025
+
+Ran v0.2.0 against 485 documents in the Community Living Administration's section of the CFR at a cost of ~$5 using gemini-2.5-flash. Analyzed all 485 docs using prompts similar to DOGE.
+
+
+
+
+[Uploading cfr_analysis_report_updated.html…]()
+
 ### AltDOGE "First Steps" - **④**
 
 This release is a proof of concept to match [DOGE's regulatory reform initiative recently discussed in the Washington Post](https://wapo.st/45d5gqL).  In a nutshell, DOGE is using LLMs to analyze the Federal Register and cue it up for massive editing. They have a pretty simple process: assess whether the regulation is statutorily required and if it is not, whether the agency needs it anyway. I was able to simulate this in prompts.
