@@ -1,4 +1,5 @@
-active,cfr_citation,parent_agency_name,agency_name,description
-1,12 CFR 100-199,Treasury Department,Office of the Comptroller of the Currency,Banking regulation
-1,13 CFR 200-299,Small Business Administration,Small Business Administration,Small business support
-1,14 CFR 300-399,Transportation Department,Federal Aviation Administration,Aviation regulation
+agency_slug,agency_name,notes
+arctic-research-commission,Arctic Research Commission,Small commission with meeting notices
+farm-credit-administration,Farm Credit Administration,Financial regulatory agency
+national-credit-union-administration,National Credit Union Administration,Credit union regulator
+federal-housing-finance-agency,Federal Housing Finance Agency,Housing finance oversight

@@ -12,9 +12,9 @@ from enum import Enum
 
 class RegulationCategory(Enum):
     """Regulation categorization types."""
-    STATUTORILY_REQUIRED = "SR"
-    NOT_STATUTORILY_REQUIRED = "NSR"
-    NOT_REQUIRED_AGENCY_NEEDS = "NRAN"
+    SR = "SR"  # Statutorily Required
+    NSR = "NSR" # Not Statutorily Required (or Non-Statutorily Required, depending on exact meaning)
+    NRAN = "NRAN" # Not Required But Agency Needs
     UNKNOWN = "UNKNOWN"
 
 

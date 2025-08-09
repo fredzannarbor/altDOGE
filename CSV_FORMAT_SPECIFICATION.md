@@ -15,12 +15,26 @@ The restructured CSV format contains the following columns in order:
 3. **Agency** - Full agency name (e.g., "National Credit Union Administration")
 4. **Publication Date** - Document publication date (YYYY-MM-DD format)
 5. **Content Length** - Document content length in characters
-6. **Category** - Regulation category code (SR, NSR, NRAN, or UNKNOWN)
-7. **Statutory References Count** - Number of statutory references found
-8. **Statutory References** - Pipe-separated list of statutory references
-9. **Reform Recommendations Count** - Number of reform recommendations
-10. **Analysis Success** - Whether analysis completed successfully (Yes/No)
-11. **Processing Time (s)** - Analysis processing time in seconds
+6. **Statutory References Count** - Number of statutory references found
+7. **Statutory References** - Pipe-separated list of statutory references
+8. **Reform Recommendations Count** - Number of reform recommendations
+9. **Analysis Success** - Whether analysis completed successfully (Yes/No)
+10. **Processing Time (s)** - Analysis processing time in seconds
+11. **[Dynamic Justification Columns]** - Additional columns extracted from justification JSON data
+
+### Dynamic Justification Columns
+
+The justification field is parsed as JSON, and each key becomes a separate column. Common columns include:
+
+- **category** - Regulation category (if present in justification)
+- **statutory_authority** - Statutory authority information
+- **legal_basis** - Legal basis for the regulation
+- **analysis** - Analysis details
+- **recommendation** - Specific recommendations
+- **summary** - Summary information
+- **conclusion** - Analysis conclusion
+
+The exact columns will vary based on the structure of the justification data for each analysis session.
 
 ### Category Codes
 
@@ -44,27 +58,29 @@ Special characters (including existing pipes) are cleaned from individual refere
 ## Example CSV Output
 
 ```csv
-Document Number,Title,Agency,Publication Date,Content Length,Category,Statutory References Count,Statutory References,Reform Recommendations Count,Analysis Success,Processing Time (s)
-2024-12345,Credit Union Capital Requirements,National Credit Union Administration,2024-01-15,2500,SR,2,12 U.S.C. 1751|12 U.S.C. 1790d,1,Yes,3.20
-2024-67890,Member Business Lending Rules,National Credit Union Administration,2024-02-20,1800,NSR,0,,2,Yes,2.10
-2024-11111,Supervisory Committee Audits,National Credit Union Administration,2024-03-10,1200,NRAN,1,12 U.S.C. 1761d,0,Yes,1.85
-2024-22222,Field of Membership Expansion,National Credit Union Administration,2024-04-05,3200,UNKNOWN,0,,1,No,0.50
+Document Number,Title,Agency,Publication Date,Content Length,Statutory References Count,Statutory References,Reform Recommendations Count,Analysis Success,Processing Time (s),analysis,category,legal_basis,recommendation
+2024-12345,Credit Union Capital Requirements,National Credit Union Administration,2024-01-15,2500,2,12 U.S.C. 1751|12 U.S.C. 1790d,1,Yes,3.20,Detailed analysis of capital requirements,SR,Federal Credit Union Act Section 216,Simplify reporting requirements
+2024-67890,Member Business Lending Rules,National Credit Union Administration,2024-02-20,1800,0,,2,Yes,2.10,Review of business lending authority,NSR,12 U.S.C. 1757a,Modernize lending limits
+2024-11111,Supervisory Committee Audits,National Credit Union Administration,2024-03-10,1200,1,12 U.S.C. 1761d,0,Yes,1.85,Audit requirement analysis,NRAN,Supervisory committee authority,Streamline audit procedures
+2024-22222,Field of Membership Expansion,National Credit Union Administration,2024-04-05,3200,0,,1,No,0.50,,,Analysis incomplete,
 ```
 
 ## Changes from Previous Format
 
 ### Removed Columns
 
+- **Category** - Removed as a fixed column; category information is now extracted from justification JSON if present
 - **Justification Preview** - Removed to focus on structured data. Full justification text is available in JSON and HTML export formats.
 
 ### Added Columns
 
 - **Statutory References** - New pipe-separated column containing the actual statutory references text, positioned after "Statutory References Count"
+- **Dynamic Justification Columns** - Individual keys from the justification JSON are extracted as separate columns
 
 ### Modified Columns
 
-- **Category** - Now uses standardized codes (SR, NSR, NRAN, UNKNOWN) instead of full text descriptions
 - Column order has been optimized for logical grouping of related fields
+- Justification data is now parsed as JSON and split into individual columns
 
 ### Unchanged Columns
 

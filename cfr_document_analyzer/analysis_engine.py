@@ -33,13 +33,14 @@ class AnalysisEngine:
             database: Database instance
         """
         self.database = database
-        self.document_retriever = DocumentRetriever(database, use_cache=True)
+        self.document_retriever = DocumentRetriever(database, use_cache=False)
         self.llm_client = LLMClient()
         self.prompt_manager = PromptManager()
         
         logger.info("Analysis engine initialized")
     
-    def analyze_agency_documents(self, agency_slug: str, prompt_strategy: str = "DOGE Criteria", 
+    def \
+            analyze_agency_documents(self, agency_slug: str, prompt_strategy: str = "DOGE Criteria",
                                document_limit: Optional[int] = None) -> AnalysisSession:
         """
         Analyze documents for a specific agency.
@@ -193,7 +194,9 @@ class AnalysisEngine:
                 'success': analysis_result.success,
                 'error_message': analysis_result.error_message
             }
-            
+            print(analysis_result)
+            print('---')
+            print(analysis_data)
             analysis_id = self.database.store_analysis(analysis_data)
             analysis_result.id = analysis_id
             
@@ -201,17 +204,24 @@ class AnalysisEngine:
             return analysis_result
             
         except Exception as e:
-            logger.error(f"Error analyzing document {document.document_number}: {e}")
+
             
             # Store failed analysis
+            if document and document.id is not None:
+                document_id_to_store = document.id
+                logger.info(f"Storing failed analysis for document {document_id_to_store}")
+            else:
+                document_id_to_store = None
+                logger.info("Storing failed analysis for unknown document id with id = 0")
+
             analysis_data = {
-                'document_id': document.id,
+                'document_id': document_id_to_store,
                 'prompt_strategy': prompt_strategy,
                 'processing_time': time.time() - start_time,
                 'success': False,
                 'error_message': str(e)
             }
-            
+
             try:
                 self.database.store_analysis(analysis_data)
             except Exception as db_error:

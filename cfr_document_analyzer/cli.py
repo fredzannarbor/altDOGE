@@ -8,6 +8,7 @@ Provides CLI access to document analysis functionality.
 import argparse
 import sys
 import logging
+import csv
 from pathlib import Path
 from typing import List, Optional
 
@@ -29,6 +30,7 @@ def setup_argument_parser() -> argparse.ArgumentParser:
 Examples:
   %(prog)s analyze --agency national-credit-union-administration --limit 5
   %(prog)s analyze --agency farm-credit-administration --strategy "DOGE Criteria"
+  %(prog)s analyze --agencies-csv agencies.csv --limit 10
   %(prog)s list-agencies
   %(prog)s results --session session_20250807_123456
         """
@@ -37,11 +39,17 @@ Examples:
     subparsers = parser.add_subparsers(dest='command', help='Available commands')
     
     # Analyze command
-    analyze_parser = subparsers.add_parser('analyze', help='Analyze documents for an agency')
-    analyze_parser.add_argument(
+    analyze_parser = subparsers.add_parser('analyze', help='Analyze documents for an agency or agencies from CSV')
+    
+    # Create mutually exclusive group for agency input
+    agency_group = analyze_parser.add_mutually_exclusive_group(required=True)
+    agency_group.add_argument(
         '--agency', '-a',
-        required=True,
-        help='Agency slug to analyze (e.g., national-credit-union-administration)'
+        help='Single agency slug to analyze (e.g., national-credit-union-administration)'
+    )
+    agency_group.add_argument(
+        '--agencies-csv', '-c',
+        help='CSV file containing agencies to analyze (must have "agency_slug" column)'
     )
     analyze_parser.add_argument(
         '--strategy', '-s',
@@ -57,6 +65,21 @@ Examples:
     analyze_parser.add_argument(
         '--output', '-o',
         help='Output file for results (default: auto-generated)'
+    )
+    analyze_parser.add_argument(
+        '--verbose', '-v',
+        action='store_true',
+        help='Enable verbose logging'
+    )
+    analyze_parser.add_argument(
+        '--quiet', '-q',
+        action='store_true',
+        help='Suppress output except errors'
+    )
+    analyze_parser.add_argument(
+        '--database', '-d',
+        default=Config.DATABASE_PATH,
+        help=f'Database path (default: {Config.DATABASE_PATH})'
     )
     
     # Results command
@@ -75,40 +98,128 @@ Examples:
         default='table',
         help='Output format (default: table)'
     )
-    
-    # List agencies command
-    list_parser = subparsers.add_parser('list-agencies', help='List available test agencies')
-    
-    # Status command
-    status_parser = subparsers.add_parser('status', help='Show system status and statistics')
-    
-    # Global options
-    parser.add_argument(
+    results_parser.add_argument(
         '--verbose', '-v',
         action='store_true',
         help='Enable verbose logging'
     )
-    parser.add_argument(
+    results_parser.add_argument(
         '--quiet', '-q',
         action='store_true',
         help='Suppress output except errors'
     )
-    parser.add_argument(
+    results_parser.add_argument(
         '--database', '-d',
         default=Config.DATABASE_PATH,
         help=f'Database path (default: {Config.DATABASE_PATH})'
     )
     
+    # List agencies command
+    list_parser = subparsers.add_parser('list-agencies', help='List available test agencies')
+    list_parser.add_argument(
+        '--verbose', '-v',
+        action='store_true',
+        help='Enable verbose logging'
+    )
+    list_parser.add_argument(
+        '--quiet', '-q',
+        action='store_true',
+        help='Suppress output except errors'
+    )
+    list_parser.add_argument(
+        '--database', '-d',
+        default=Config.DATABASE_PATH,
+        help=f'Database path (default: {Config.DATABASE_PATH})'
+    )
+    
+    # Status command
+    status_parser = subparsers.add_parser('status', help='Show system status and statistics')
+    status_parser.add_argument(
+        '--verbose', '-v',
+        action='store_true',
+        help='Enable verbose logging'
+    )
+    status_parser.add_argument(
+        '--quiet', '-q',
+        action='store_true',
+        help='Suppress output except errors'
+    )
+    status_parser.add_argument(
+        '--database', '-d',
+        default=Config.DATABASE_PATH,
+        help=f'Database path (default: {Config.DATABASE_PATH})'
+    )
+    
+
+    
     return parser
 
 
+def load_agencies_from_csv(csv_file_path: str) -> List[str]:
+    """
+    Load agency slugs from a CSV file.
+    
+    Args:
+        csv_file_path: Path to CSV file containing agencies
+        
+    Returns:
+        List of agency slugs
+        
+    Raises:
+        FileNotFoundError: If CSV file doesn't exist
+        ValueError: If CSV file is malformed or missing required columns
+    """
+    csv_path = Path(csv_file_path)
+    
+    if not csv_path.exists():
+        raise FileNotFoundError(f"CSV file not found: {csv_file_path}")
+    
+    agencies = []
+    
+    try:
+        with open(csv_path, 'r', encoding='utf-8') as f:
+            reader = csv.DictReader(f)
+            
+            # Check for required column
+            if 'agency_slug' not in reader.fieldnames:
+                raise ValueError(f"CSV file must contain 'agency_slug' column. Found columns: {reader.fieldnames}")
+            
+            for row_num, row in enumerate(reader, 2):  # Start at 2 since header is row 1
+                agency_slug = row.get('agency_slug', '').strip()
+                
+                if not agency_slug:
+                    print(f"Warning: Empty agency_slug in row {row_num}, skipping")
+                    continue
+                
+                agencies.append(agency_slug)
+        
+        if not agencies:
+            raise ValueError(f"No valid agency slugs found in CSV file: {csv_file_path}")
+        
+        return agencies
+        
+    except csv.Error as e:
+        raise ValueError(f"Error reading CSV file {csv_file_path}: {e}")
+
+
 def cmd_analyze(args: argparse.Namespace) -> int:
-    """Handle analyze command."""
+    """Handle analyze command for single agency or CSV file of agencies."""
     logger = logging.getLogger(__name__)
     
     try:
+        # Determine agencies to analyze
+        if args.agency:
+            # Single agency mode
+            agencies = [args.agency]
+            logger.info(f"Single agency mode: {args.agency}")
+        elif args.agencies_csv:
+            # CSV file mode
+            agencies = load_agencies_from_csv(args.agencies_csv)
+            logger.info(f"CSV mode: loaded {len(agencies)} agencies from {args.agencies_csv}")
+        else:
+            raise ValueError("Either --agency or --agencies-csv must be specified")
+        
         # Validate inputs
-        ErrorHandler.validate_agency_slug(args.agency)
         ErrorHandler.validate_document_limit(args.limit)
         
         # Initialize components
@@ -119,70 +230,96 @@ def cmd_analyze(args: argparse.Namespace) -> int:
         available_strategies = engine.prompt_manager.get_available_packages()
         ErrorHandler.validate_prompt_strategy(args.strategy, available_strategies)
         
-        logger.info(f"Starting analysis for agency: {args.agency}")
         logger.info(f"Strategy: {args.strategy}")
-        logger.info(f"Document limit: {args.limit}")
+        logger.info(f"Document limit per agency: {args.limit}")
         
-        # Run analysis
-        session = engine.analyze_agency_documents(
-            agency_slug=args.agency,
-            prompt_strategy=args.strategy,
-            document_limit=args.limit
-        )
+        # Process each agency
+        all_sessions = []
+        total_documents_processed = 0
         
-        # Print results
-        print(f"\nAnalysis completed!")
-        print(f"Session ID: {session.session_id}")
-        print(f"Status: {session.status.value}")
-        print(f"Documents processed: {session.documents_processed}/{session.total_documents}")
+        for i, agency_slug in enumerate(agencies, 1):
+            print(f"\n{'='*60}")
+            print(f"Processing agency {i}/{len(agencies)}: {agency_slug}")
+            print(f"{'='*60}")
+            
+            try:
+                # Validate agency slug
+                ErrorHandler.validate_agency_slug(agency_slug)
+                
+                # Run analysis for this agency
+                session = engine.analyze_agency_documents(
+                    agency_slug=agency_slug,
+                    prompt_strategy=args.strategy,
+                    document_limit=args.limit
+                )
+                
+                all_sessions.append(session)
+                total_documents_processed += session.documents_processed
+                
+                # Print individual agency results
+                print(f"Agency: {extract_agency_name(agency_slug)}")
+                print(f"Session ID: {session.session_id}")
+                print(f"Status: {session.status.value}")
+                print(f"Documents processed: {session.documents_processed}/{session.total_documents}")
+                
+                if session.status == SessionStatus.COMPLETED and session.documents_processed > 0:
+                    # Get results for this agency
+                    results = engine.get_analysis_results(session.session_id)
+                    
+                    # Count by category
+                    categories = {}
+                    for result in results:
+                        category = result['analysis']['category'] or 'UNKNOWN'
+                        categories[category] = categories.get(category, 0) + 1
+                    
+                    print(f"Categories:")
+                    for category, count in categories.items():
+                        print(f"  {category}: {count}")
+                    
+                    # Auto-generate exports for this agency
+                    export_manager = ExportManager()
+                    exported_files = export_manager.export_session_results(
+                        results, session.session_id, ['json', 'csv', 'html']
+                    )
+                    
+                    # Create agency presentation summary
+                    summary_file = export_manager.create_agency_presentation_summary(
+                        results, session.session_id
+                    )
+                    
+                    print(f"Exports:")
+                    for format_name, filepath in exported_files.items():
+                        print(f"  {format_name.upper()}: {filepath}")
+                    if summary_file:
+                        print(f"  Summary: {summary_file}")
+                
+            except Exception as e:
+                logger.error(f"Failed to analyze agency {agency_slug}: {e}")
+                print(f"❌ Error analyzing {agency_slug}: {e}")
+                continue
         
-        if session.status == SessionStatus.COMPLETED and session.documents_processed > 0:
-            # Get detailed results
-            results = engine.get_analysis_results(session.session_id)
-            
-            print(f"\nResults Summary:")
-            print(f"Total documents analyzed: {len(results)}")
-            
-            # Count by category
-            categories = {}
-            for result in results:
-                category = result['analysis']['category'] or 'UNKNOWN'
-                categories[category] = categories.get(category, 0) + 1
-            
-            for category, count in categories.items():
-                print(f"  {category}: {count}")
-            
+        # Print overall summary
+        print(f"\n{'='*60}")
+        print(f"BATCH ANALYSIS SUMMARY")
+        print(f"{'='*60}")
+        print(f"Total agencies processed: {len(all_sessions)}")
+        print(f"Total documents processed: {total_documents_processed}")
+        
+        successful_sessions = [s for s in all_sessions if s.status == SessionStatus.COMPLETED]
+        print(f"Successful agencies: {len(successful_sessions)}")
+        
+        if successful_sessions:
             # Show usage stats
             stats = engine.get_usage_statistics()
-            print(f"\nLLM Usage:")
+            print(f"\nOverall LLM Usage:")
             print(f"  Total calls: {stats['total_calls']}")
             print(f"  Success rate: {stats['success_rate']:.1f}%")
             print(f"  Total time: {stats['total_time']:.1f}s")
             
-            # Save results if requested
-            if args.output:
-                save_results_to_file(results, args.output, session.session_id)
-                print(f"\nResults saved to: {args.output}")
-            else:
-                # Auto-generate exports for agency presentation
-                export_manager = ExportManager()
-                exported_files = export_manager.export_session_results(
-                    results, session.session_id, ['json', 'csv', 'html']
-                )
-                
-                # Create agency presentation summary
-                summary_file = export_manager.create_agency_presentation_summary(
-                    results, session.session_id
-                )
-                
-                print(f"\nAuto-generated exports:")
-                for format_name, filepath in exported_files.items():
-                    print(f"  {format_name.upper()}: {filepath}")
-                if summary_file:
-                    print(f"  Agency Summary: {summary_file}")
-            
-            print(f"\nTo view detailed results, run:")
-            print(f"  {sys.argv[0]} results --session {session.session_id}")
+            print(f"\nSession IDs for detailed results:")
+            for session in successful_sessions:
+                agency_name = extract_agency_name(session.agency_slugs[0]) if session.agency_slugs else "Unknown"
+                print(f"  {agency_name}: {session.session_id}")
         
         engine.close()
         return 0

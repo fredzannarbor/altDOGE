@@ -10,6 +10,18 @@ A Python tool for counting Federal Register documents by CFR agency using the Fe
 ### 2. CFR Document Analyzer
 An advanced tool for analyzing CFR documents using LLM-based analysis to categorize regulations according to DOGE (Department of Government Efficiency) criteria.
 
+#### Document Retrieval System
+
+The CFR Document Analyzer includes a robust document retrieval system with the following features:
+
+- **Automatic Pagination**: Retrieves all available documents without artificial limits
+- **Content Fallback**: Falls back to HTML extraction when XML fails  
+- **Retry Logic**: Exponential backoff for temporary failures
+- **Rate Limiting**: Complies with Federal Register API guidelines
+- **Comprehensive Logging**: Detailed statistics and error reporting
+
+The system works with any Federal Register agency and provides detailed retrieval statistics including success rates and content sources.
+
 ## Overview
 
 The CFR Agency Document Counter processes a CSV file of federal agencies and queries the Federal Register API to count how many documents each agency has published. It provides comprehensive reporting, progress tracking, and robust error handling.

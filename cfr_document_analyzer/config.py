@@ -38,8 +38,20 @@ class Config:
     GEMINI_API_KEY: str = os.getenv('GEMINI_API_KEY', '')
     
     # Document processing settings
-    MAX_DOCUMENT_LENGTH: int = int(os.getenv('CDA_MAX_DOC_LENGTH', '50000'))
+    MAX_DOCUMENT_LENGTH: int = int(os.getenv('CDA_MAX_DOC_LENGTH', '1000000'))
     DOCUMENT_CACHE_SIZE: int = int(os.getenv('CDA_CACHE_SIZE', '100'))
+    
+    # Document retrieval settings
+    DEFAULT_PAGE_SIZE: int = int(os.getenv('CDA_DEFAULT_PAGE_SIZE', '100'))
+    MAX_PAGE_SIZE: int = int(os.getenv('CDA_MAX_PAGE_SIZE', '1000'))
+    ENABLE_HTML_FALLBACK: bool = os.getenv('CDA_ENABLE_HTML_FALLBACK', 'true').lower() == 'true'
+    CONTENT_EXTRACTION_TIMEOUT: int = int(os.getenv('CDA_CONTENT_EXTRACTION_TIMEOUT', '30'))
+    
+    # Retry settings
+    MAX_RETRY_ATTEMPTS: int = int(os.getenv('CDA_MAX_RETRY_ATTEMPTS', '3'))
+    RETRY_BASE_DELAY: float = float(os.getenv('CDA_RETRY_BASE_DELAY', '1.0'))
+    RETRY_MAX_DELAY: float = float(os.getenv('CDA_RETRY_MAX_DELAY', '60.0'))
+    RETRY_BACKOFF_FACTOR: float = float(os.getenv('CDA_RETRY_BACKOFF_FACTOR', '2.0'))
     
     # Analysis settings
     DEFAULT_PROMPT_STRATEGY: str = os.getenv('CDA_DEFAULT_STRATEGY', 'DOGE Criteria')

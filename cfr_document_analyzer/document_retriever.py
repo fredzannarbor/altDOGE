@@ -19,6 +19,8 @@ from .config import Config
 from .models import Document
 from .database import Database
 from .utils import truncate_text
+from .url_builder import URLBuilder
+from .content_extractor import ContentExtractor
 
 
 logger = logging.getLogger(__name__)
@@ -39,15 +41,15 @@ class DocumentRetriever:
         self.use_cache = use_cache
         self.rate_limit = Config.FR_API_RATE_LIMIT
         self.session = requests.Session()
+        self.content_extractor = ContentExtractor(self.session)
         
         # Set realistic headers to avoid blocking
         self.session.headers.update({
-            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+            'User-Agent': 'CFR-Document-Analyzer/1.0 (Educational Research Tool)',
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,application/json;q=0.8,*/*;q=0.7',
             'Accept-Language': 'en-US,en;q=0.5',
             'Accept-Encoding': 'gzip, deflate',
             'Connection': 'keep-alive',
-            'Upgrade-Insecure-Requests': '1',
         })
         
         logger.info("Document retriever initialized with direct fetching")
@@ -88,14 +90,25 @@ class DocumentRetriever:
                 if document and document.content:
                     documents_with_content.append(document)
                     
-                    # Cache the document
-                    if self.use_cache:
-                        self._cache_document(document)
+                    # Always store document in database to get an ID (required for analysis)
+                    # Even if caching is disabled, we need the document ID for analysis storage
+                    self._cache_document(document)
                 
                 # Rate limiting
                 time.sleep(self.rate_limit)
             
-            logger.info(f"Retrieved {len(documents_with_content)} documents with content for {agency_slug}")
+            # Log summary statistics
+            total_attempted = len(documents)
+            successful_retrievals = len(documents_with_content)
+            failed_retrievals = total_attempted - successful_retrievals
+            success_rate = (successful_retrievals / total_attempted * 100) if total_attempted > 0 else 0
+            
+            logger.info(f"Document retrieval summary for {agency_slug}:")
+            logger.info(f"  Total documents attempted: {total_attempted}")
+            logger.info(f"  Successful retrievals: {successful_retrievals}")
+            logger.info(f"  Failed retrievals: {failed_retrievals}")
+            logger.info(f"  Success rate: {success_rate:.1f}%")
+            
             return documents_with_content
             
         except Exception as e:
@@ -104,7 +117,7 @@ class DocumentRetriever:
     
     def _fetch_documents_from_web(self, agency_slug: str, limit: Optional[int]) -> List[Dict]:
         """
-        Fetch document metadata by scraping Federal Register website.
+        Fetch document metadata by scraping Federal Register website with pagination.
         
         Args:
             agency_slug: Agency identifier
@@ -116,12 +129,22 @@ class DocumentRetriever:
         documents = []
         
         try:
+            # Try JSON API first as it's more reliable for pagination
+            logger.info("Trying JSON API for document retrieval...")
+            json_docs = self._fetch_documents_from_json_api(agency_slug, limit)
+            if json_docs:
+                logger.info(f"Successfully fetched {len(json_docs)} documents from JSON API")
+                return json_docs
+            
+            # Fallback to HTML scraping if JSON API fails
+            logger.info("JSON API failed, falling back to HTML scraping...")
+            
             # Build search URL for the agency
             search_url = "https://www.federalregister.gov/documents/search"
             params = {
                 'conditions[agencies][]': agency_slug,
                 'order': 'newest',
-                'per_page': min(limit or 20, 20)
+                'per_page': min(limit or 100, 100)  # Increased default from 20 to 100
             }
             
             logger.info(f"Fetching documents from {search_url} for agency {agency_slug}")
@@ -153,22 +176,6 @@ class DocumentRetriever:
                 doc_data = self._extract_document_info_from_element(element, agency_slug)
                 if doc_data:
                     documents.append(doc_data)
-            
-            # If we didn't find enough documents, try the JSON API as fallback
-            if len(documents) < (limit or 5):
-                logger.info("Trying JSON API as fallback...")
-                json_docs = self._try_json_api_fallback(agency_slug, limit)
-                documents.extend(json_docs)
-                
-                # Remove duplicates based on document_number
-                seen = set()
-                unique_docs = []
-                for doc in documents:
-                    doc_num = doc.get('document_number')
-                    if doc_num and doc_num not in seen:
-                        seen.add(doc_num)
-                        unique_docs.append(doc)
-                documents = unique_docs
             
             logger.info(f"Fetched {len(documents)} document records from web scraping")
             return documents[:limit] if limit else documents
@@ -205,14 +212,14 @@ class DocumentRetriever:
             if cfr_refs and isinstance(cfr_refs, list) and len(cfr_refs) > 0:
                 cfr_citation = cfr_refs[0].get('citation', '')
             
-            # Fetch document content
-            content = ""
-            if xml_url:
-                content = self._fetch_document_content(xml_url)
+            # Fetch document content using ContentExtractor
+            content, content_source = self.content_extractor.extract_content(doc_data)
             
             if not content:
                 logger.warning(f"No content retrieved for document {document_number}")
                 return None
+            
+            logger.debug(f"Content retrieved from {content_source} for document {document_number}")
             
             # Create Document object
             document = Document(
@@ -231,53 +238,7 @@ class DocumentRetriever:
             logger.error(f"Error creating document from API data: {e}")
             return None
     
-    def _fetch_document_content(self, xml_url: str) -> str:
-        """
-        Fetch and parse document content from XML URL.
-        
-        Args:
-            xml_url: URL to document XML
-            
-        Returns:
-            Extracted text content
-        """
-        try:
-            logger.debug(f"Fetching content from: {xml_url}")
-            
-            response = self.session.get(xml_url, timeout=Config.REQUEST_TIMEOUT)
-            response.raise_for_status()
-            
-            # Parse XML content
-            root = ET.fromstring(response.content)
-            
-            # Extract text from all elements
-            text_parts = []
-            for elem in root.iter():
-                if elem.text and elem.text.strip():
-                    text_parts.append(elem.text.strip())
-                if elem.tail and elem.tail.strip():
-                    text_parts.append(elem.tail.strip())
-            
-            # Join and clean up text
-            content = ' '.join(text_parts)
-            content = ' '.join(content.split())  # Normalize whitespace
-            
-            # Truncate if too long
-            if len(content) > Config.MAX_DOCUMENT_LENGTH:
-                content = truncate_text(content, Config.MAX_DOCUMENT_LENGTH)
-                logger.warning(f"Document content truncated to {Config.MAX_DOCUMENT_LENGTH} characters")
-            
-            return content
-            
-        except requests.exceptions.RequestException as e:
-            logger.error(f"HTTP error fetching content from {xml_url}: {e}")
-            return ""
-        except ET.ParseError as e:
-            logger.error(f"XML parsing error for {xml_url}: {e}")
-            return ""
-        except Exception as e:
-            logger.error(f"Unexpected error fetching content from {xml_url}: {e}")
-            return ""
+
     
     def _cache_document(self, document: Document) -> None:
         """
@@ -378,9 +339,9 @@ class DocumentRetriever:
             
             # Try alternative methods if not found
             if not doc_number:
-                # Look for document number in text
+                # Look for document number in text with expanded patterns
                 text = element.get_text()
-                doc_match = re.search(r'(\d{4}-\d{5}|\d{4}-\w+-\d+)', text)
+                doc_match = re.search(r'(\d{4}-\d{5}|\d{4}-\w+-\d+|E\d-\d{5})', text)
                 if doc_match:
                     doc_number = doc_match.group(1)
             
@@ -393,15 +354,13 @@ class DocumentRetriever:
             if date_elem:
                 pub_date = date_elem.get('datetime') or date_elem.get_text(strip=True)
             
-            # Construct XML URL if we have document info
-            if doc_number and '/' in doc_number:
-                # Convert document number to XML URL
-                xml_url = f"https://www.federalregister.gov/documents/full_text/xml/{doc_number}.xml"
-            elif doc_link:
-                # Try to construct from document page URL
-                doc_url = doc_link.get('href')
-                if doc_url:
-                    xml_url = doc_url.replace('/documents/', '/documents/full_text/xml/') + '.xml'
+            # Construct XML URL using URLBuilder
+            if doc_number:
+                doc_data_temp = {
+                    'document_number': doc_number,
+                    'publication_date': pub_date
+                }
+                xml_url = URLBuilder.build_xml_url(doc_data_temp)
             
             if doc_number and title:
                 return {
@@ -418,9 +377,9 @@ class DocumentRetriever:
             logger.debug(f"Error extracting document info: {e}")
             return None
     
-    def _try_json_api_fallback(self, agency_slug: str, limit: Optional[int]) -> List[Dict]:
+    def _fetch_documents_from_json_api(self, agency_slug: str, limit: Optional[int]) -> List[Dict]:
         """
-        Try JSON API as fallback when HTML scraping doesn't find enough documents.
+        Fetch document metadata from Federal Register JSON API with pagination.
         
         Args:
             agency_slug: Agency identifier
@@ -429,29 +388,62 @@ class DocumentRetriever:
         Returns:
             List of document metadata dictionaries
         """
+        documents = []
+        page = 1
+        per_page = 100  # Maximum allowed by API
+        
         try:
             api_url = "https://www.federalregister.gov/api/v1/documents.json"
-            params = {
-                'conditions[agencies][]': agency_slug,
-                'per_page': min(limit or 10, 10),
-                'fields[]': ['title', 'document_number', 'publication_date', 'full_text_xml_url', 'cfr_references']
-            }
             
             # Set JSON accept header
             headers = self.session.headers.copy()
             headers['Accept'] = 'application/json'
             
-            response = self.session.get(api_url, params=params, headers=headers, timeout=Config.REQUEST_TIMEOUT)
-            response.raise_for_status()
+            while True:
+                params = {
+                    'conditions[agencies][]': agency_slug,
+                    'per_page': per_page,
+                    'page': page,
+                    'fields[]': ['title', 'document_number', 'publication_date', 'full_text_xml_url', 'cfr_references']
+                }
+                
+                logger.debug(f"Fetching page {page} from JSON API for {agency_slug}")
+                
+                response = self.session.get(api_url, params=params, headers=headers, timeout=Config.REQUEST_TIMEOUT)
+                response.raise_for_status()
+                
+                data = response.json()
+                page_documents = data.get('results', [])
+                
+                if not page_documents:
+                    logger.debug(f"No more documents found on page {page}")
+                    break
+                
+                documents.extend(page_documents)
+                logger.info(f"Retrieved {len(page_documents)} documents from page {page}, total: {len(documents)}")
+                
+                # Check if we've reached the limit
+                if limit and len(documents) >= limit:
+                    documents = documents[:limit]
+                    logger.info(f"Reached document limit of {limit}")
+                    break
+                
+                # Check if there are more pages
+                total_pages = data.get('total_pages', 1)
+                if page >= total_pages:
+                    logger.debug(f"Reached last page ({total_pages})")
+                    break
+                
+                page += 1
+                
+                # Rate limiting between pages
+                time.sleep(self.rate_limit)
             
-            data = response.json()
-            documents = data.get('results', [])
-            
-            logger.info(f"JSON API fallback found {len(documents)} documents")
+            logger.info(f"JSON API retrieved {len(documents)} total documents for {agency_slug}")
             return documents
             
         except Exception as e:
-            logger.debug(f"JSON API fallback failed: {e}")
+            logger.error(f"JSON API failed for {agency_slug}: {e}")
             return []
     
     def close(self):

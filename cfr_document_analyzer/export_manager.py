@@ -7,6 +7,7 @@ Handles exporting analysis results in various formats for agency staff presentat
 import json
 import csv
 import logging
+import re
 from pathlib import Path
 from typing import List, Dict, Any, Optional
 from datetime import datetime
@@ -111,31 +112,42 @@ class ExportManager:
         """Export results as CSV."""
         filepath = self.output_dir / f"{base_filename}.csv"
         
+        # First pass: collect all possible justification keys to determine dynamic columns
+        justification_keys = set()
+        for result in results:
+            analysis = result['analysis']
+            justification_data = self._parse_justification_json(analysis.get('justification', ''))
+            if justification_data:
+                justification_keys.update(justification_data.keys())
+        
+        # Sort keys for consistent column order
+        sorted_justification_keys = sorted(justification_keys)
+        
         with open(filepath, 'w', newline='', encoding='utf-8') as f:
             writer = csv.writer(f)
             
-            # Write header - restructured format
+            # Write header - restructured format (removed Category column)
             headers = [
                 'Document Number',
                 'Title',
                 'Agency',
                 'Publication Date',
                 'Content Length',
-                'Category',
                 'Statutory References Count',
                 'Statutory References',
                 'Reform Recommendations Count',
                 'Analysis Success',
                 'Processing Time (s)'
             ]
+            
+            # Add dynamic justification columns
+            headers.extend(sorted_justification_keys)
+            
             writer.writerow(headers)
             
             # Write data rows
             for result in results:
                 analysis = result['analysis']
-                
-                # Extract category from analysis object
-                category = self._extract_category(analysis)
                 
                 # Extract and format statutory references
                 statutory_refs = self._extract_statutory_references(analysis)
@@ -149,62 +161,38 @@ class ExportManager:
                 processing_time = analysis.get('processing_time', 0)
                 processing_time = processing_time if processing_time is not None else 0
                 
+                # Parse justification JSON
+                justification_data = self._parse_justification_json(analysis.get('justification', ''))
+                
+                # Build base row (without Category column)
                 row = [
                     result['document_number'],
                     result['title'],
                     extract_agency_name(result['agency_slug']),
                     result.get('publication_date', ''),
                     result.get('content_length', 0),
-                    category,
                     len(statutory_refs),
                     statutory_refs_str,
                     len(reform_recs),
                     'Yes' if analysis.get('success') else 'No',
                     f"{processing_time:.2f}"
                 ]
+                
+                # Add justification data columns
+                for key in sorted_justification_keys:
+                    value = justification_data.get(key, '') if justification_data else ''
+                    # Convert lists to pipe-separated strings for CSV compatibility
+                    if isinstance(value, list):
+                        value = '|'.join(str(item) for item in value)
+                    elif value is None:
+                        value = ''
+                    row.append(str(value))
+                
                 writer.writerow(row)
         
         return filepath
     
-    def _extract_category(self, analysis: Dict[str, Any]) -> str:
-        """
-        Extract category from analysis object.
-        
-        Handles RegulationCategory enum values and string representations.
-        Provides fallback to "UNKNOWN" for missing or invalid categories.
-        
-        Args:
-            analysis: Analysis result dictionary
-            
-        Returns:
-            Category string (SR, NSR, NRAN, or UNKNOWN)
-        """
-        category = analysis.get('category', 'UNKNOWN')
-        
-        # Handle RegulationCategory enum values
-        if hasattr(category, 'value'):
-            return category.value
-        elif isinstance(category, str):
-            # Normalize string representations
-            category_upper = category.upper().strip()
-            valid_categories = {'SR', 'NSR', 'NRAN', 'UNKNOWN'}
-            
-            # Handle full names
-            category_mapping = {
-                'STATUTORILY_REQUIRED': 'SR',
-                'NOT_STATUTORILY_REQUIRED': 'NSR', 
-                'NOT_REQUIRED_AGENCY_NEEDS': 'NRAN',
-                'NOT_REQUIRED_BUT_AGENCY_NEEDS': 'NRAN'
-            }
-            
-            if category_upper in valid_categories:
-                return category_upper
-            elif category_upper in category_mapping:
-                return category_mapping[category_upper]
-            else:
-                return 'UNKNOWN'
-        else:
-            return 'UNKNOWN'
+
     
     def _extract_statutory_references(self, analysis: Dict[str, Any]) -> List[str]:
         """Extract statutory references from analysis object."""
@@ -239,6 +227,85 @@ class ExportManager:
                     cleaned_refs.append(cleaned_ref)
         
         return '|'.join(cleaned_refs)
+    
+    def _parse_justification_json(self, justification: str) -> Optional[Dict[str, Any]]:
+        """
+        Parse justification field as JSON and extract keys.
+        
+        Args:
+            justification: Justification text that may contain JSON
+            
+        Returns:
+            Dictionary of parsed JSON data, or None if parsing fails
+        """
+        if not justification or not isinstance(justification, str):
+            return None
+        
+        try:
+            # Try to parse the entire justification as JSON
+            return json.loads(justification)
+        except json.JSONDecodeError:
+            # If direct parsing fails, try to find JSON within the text
+            try:
+                # Look for JSON-like structures in the text
+                import re
+                
+                # Try to find a JSON object within the text
+                json_match = re.search(r'\{.*\}', justification, re.DOTALL)
+                if json_match:
+                    json_str = json_match.group(0)
+                    return json.loads(json_str)
+                
+                # Try to find a JSON array within the text
+                json_array_match = re.search(r'\[.*\]', justification, re.DOTALL)
+                if json_array_match:
+                    json_str = json_array_match.group(0)
+                    parsed = json.loads(json_str)
+                    # If it's an array, convert to dict with indexed keys
+                    if isinstance(parsed, list):
+                        return {f"item_{i}": item for i, item in enumerate(parsed)}
+                    return parsed
+                
+            except json.JSONDecodeError:
+                pass
+        
+        # If all JSON parsing fails, try to extract structured data from text
+        return self._extract_structured_data_from_text(justification)
+    
+    def _extract_structured_data_from_text(self, text: str) -> Optional[Dict[str, Any]]:
+        """
+        Extract structured data from text using pattern matching.
+        
+        Args:
+            text: Text to extract structured data from
+            
+        Returns:
+            Dictionary of extracted data, or None if no structure found
+        """
+        if not text:
+            return None
+        
+        extracted = {}
+        
+        # Common patterns to look for
+        patterns = {
+            'category': r'(?:CATEGORY|Category):\s*([^\n\r]+)',
+            'statutory_authority': r'(?:STATUTORY AUTHORITY|Statutory Authority):\s*([^\n\r]+)',
+            'legal_basis': r'(?:LEGAL BASIS|Legal Basis):\s*([^\n\r]+)',
+            'justification': r'(?:JUSTIFICATION|Justification):\s*([^\n\r]+)',
+            'analysis': r'(?:ANALYSIS|Analysis):\s*([^\n\r]+)',
+            'recommendation': r'(?:RECOMMENDATION|Recommendation):\s*([^\n\r]+)',
+            'summary': r'(?:SUMMARY|Summary):\s*([^\n\r]+)',
+            'conclusion': r'(?:CONCLUSION|Conclusion):\s*([^\n\r]+)'
+        }
+        
+        for key, pattern in patterns.items():
+            match = re.search(pattern, text, re.IGNORECASE | re.MULTILINE)
+            if match:
+                extracted[key] = match.group(1).strip()
+        
+        # If we found any structured data, return it
+        return extracted if extracted else None
     
     def generate_agency_synopsis(self, agency_name: str) -> Dict[str, Any]:
         """

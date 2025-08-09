@@ -46,7 +46,12 @@ class TestExportManager(unittest.TestCase):
                     'reform_recommendations': ['Simplify reporting requirements'],
                     'success': True,
                     'processing_time': 2.5,
-                    'justification': 'This regulation is required by statute...'
+                    'justification': json.dumps({
+                        'category': 'SR',
+                        'analysis': 'This regulation is required by statute',
+                        'legal_basis': '12 U.S.C. 1751',
+                        'recommendation': 'Maintain current structure'
+                    })
                 }
             },
             {
@@ -61,7 +66,11 @@ class TestExportManager(unittest.TestCase):
                     'reform_recommendations': ['Consider elimination', 'Merge with similar rules'],
                     'success': True,
                     'processing_time': 1.8,
-                    'justification': 'This regulation is not statutorily required...'
+                    'justification': json.dumps({
+                        'category': 'NSR',
+                        'analysis': 'This regulation is not statutorily required',
+                        'summary': 'Can be eliminated or simplified'
+                    })
                 }
             }
         ]
@@ -83,13 +92,13 @@ class TestExportManager(unittest.TestCase):
             reader = csv.reader(f)
             headers = next(reader)
         
-        expected_headers = [
+        # Base expected headers (without Category column)
+        expected_base_headers = [
             'Document Number',
             'Title',
             'Agency',
             'Publication Date',
             'Content Length',
-            'Category',
             'Statutory References Count',
             'Statutory References',
             'Reform Recommendations Count',
@@ -97,52 +106,65 @@ class TestExportManager(unittest.TestCase):
             'Processing Time (s)'
         ]
         
-        self.assertEqual(headers, expected_headers)
+        # Verify base headers are present
+        for header in expected_base_headers:
+            self.assertIn(header, headers)
+        
+        # Verify Category column is NOT in headers (removed)
+        self.assertNotIn('Category', headers)
         
         # Verify Justification Preview is NOT in headers
         self.assertNotIn('Justification Preview', headers)
+        
+        # Verify justification-derived columns are present
+        justification_columns = ['analysis', 'category', 'legal_basis', 'recommendation', 'summary']
+        for col in justification_columns:
+            if col in ['analysis', 'category', 'legal_basis']:  # These should be in our test data
+                self.assertIn(col, headers)
     
-    def test_category_extraction_enum(self):
-        """Test category extraction from RegulationCategory enum."""
-        analysis = {'category': RegulationCategory.STATUTORILY_REQUIRED}
-        category = self.export_manager._extract_category(analysis)
-        self.assertEqual(category, 'SR')
+    def test_justification_json_parsing(self):
+        """Test parsing of justification field as JSON."""
+        # Test valid JSON parsing
+        json_justification = json.dumps({
+            'category': 'SR',
+            'analysis': 'Test analysis',
+            'legal_basis': 'Test statute'
+        })
         
-        analysis = {'category': RegulationCategory.NOT_STATUTORILY_REQUIRED}
-        category = self.export_manager._extract_category(analysis)
-        self.assertEqual(category, 'NSR')
-        
-        analysis = {'category': RegulationCategory.NOT_REQUIRED_AGENCY_NEEDS}
-        category = self.export_manager._extract_category(analysis)
-        self.assertEqual(category, 'NRAN')
-        
-        analysis = {'category': RegulationCategory.UNKNOWN}
-        category = self.export_manager._extract_category(analysis)
-        self.assertEqual(category, 'UNKNOWN')
+        parsed = self.export_manager._parse_justification_json(json_justification)
+        self.assertIsNotNone(parsed)
+        self.assertEqual(parsed['category'], 'SR')
+        self.assertEqual(parsed['analysis'], 'Test analysis')
+        self.assertEqual(parsed['legal_basis'], 'Test statute')
     
-    def test_category_extraction_string(self):
-        """Test category extraction from string values."""
-        # Test direct string values
-        analysis = {'category': 'SR'}
-        category = self.export_manager._extract_category(analysis)
-        self.assertEqual(category, 'SR')
+    def test_justification_text_parsing(self):
+        """Test parsing of justification field as structured text."""
+        text_justification = """
+        CATEGORY: NRAN
+        ANALYSIS: This is a test analysis
+        LEGAL BASIS: 12 U.S.C. 1751
+        """
         
-        analysis = {'category': 'nsr'}
-        category = self.export_manager._extract_category(analysis)
-        self.assertEqual(category, 'NSR')
+        parsed = self.export_manager._parse_justification_json(text_justification)
+        self.assertIsNotNone(parsed)
+        self.assertEqual(parsed['category'], 'NRAN')
+        self.assertEqual(parsed['analysis'], 'This is a test analysis')
+        self.assertEqual(parsed['legal_basis'], '12 U.S.C. 1751')
+    
+    def test_justification_parsing_failure(self):
+        """Test handling of unparseable justification data."""
+        # Test with plain text that has no structure
+        plain_text = "This is just plain text with no structure"
+        parsed = self.export_manager._parse_justification_json(plain_text)
+        self.assertIsNone(parsed)
         
-        # Test full name mappings
-        analysis = {'category': 'STATUTORILY_REQUIRED'}
-        category = self.export_manager._extract_category(analysis)
-        self.assertEqual(category, 'SR')
+        # Test with None
+        parsed = self.export_manager._parse_justification_json(None)
+        self.assertIsNone(parsed)
         
-        analysis = {'category': 'NOT_STATUTORILY_REQUIRED'}
-        category = self.export_manager._extract_category(analysis)
-        self.assertEqual(category, 'NSR')
-        
-        analysis = {'category': 'NOT_REQUIRED_AGENCY_NEEDS'}
-        category = self.export_manager._extract_category(analysis)
-        self.assertEqual(category, 'NRAN')
+        # Test with empty string
+        parsed = self.export_manager._parse_justification_json("")
+        self.assertIsNone(parsed)
     
     def test_category_extraction_fallback(self):
         """Test category extraction fallback to UNKNOWN."""
