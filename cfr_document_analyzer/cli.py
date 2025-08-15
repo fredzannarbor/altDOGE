@@ -16,6 +16,8 @@ from .config import Config
 from .database import Database
 from .analysis_engine import AnalysisEngine
 from .export_manager import ExportManager
+from .statistics_engine import StatisticsEngine
+from .session_manager import SessionManager
 from .error_handler import ErrorHandler, AnalysisError
 from .models import SessionStatus
 from .utils import extract_agency_name
@@ -29,10 +31,12 @@ def setup_argument_parser() -> argparse.ArgumentParser:
         epilog="""
 Examples:
   %(prog)s analyze --agency national-credit-union-administration --limit 5
-  %(prog)s analyze --agency farm-credit-administration --strategy "DOGE Criteria"
-  %(prog)s analyze --agencies-csv agencies.csv --limit 10
-  %(prog)s list-agencies
+  %(prog)s analyze --agencies-file agencies.csv --limit 10
   %(prog)s results --session session_20250807_123456
+  %(prog)s meta-analysis --session session_20250807_123456 --format markdown
+  %(prog)s statistics --include-patterns --format markdown
+  %(prog)s sessions list --status completed --limit 10
+  %(prog)s export --session session_20250807_123456 --format all
         """
     )
     
@@ -145,6 +149,219 @@ Examples:
         help='Suppress output except errors'
     )
     status_parser.add_argument(
+        '--database', '-d',
+        default=Config.DATABASE_PATH,
+        help=f'Database path (default: {Config.DATABASE_PATH})'
+    )
+    
+    # Meta-analysis command
+    meta_parser = subparsers.add_parser('meta-analysis', help='Perform meta-analysis on session results')
+    meta_parser.add_argument(
+        '--session', '-s',
+        required=True,
+        help='Session ID to perform meta-analysis on'
+    )
+    meta_parser.add_argument(
+        '--output', '-o',
+        help='Output file for meta-analysis results (default: auto-generated)'
+    )
+    meta_parser.add_argument(
+        '--format', '-f',
+        choices=['json', 'markdown', 'text'],
+        default='markdown',
+        help='Output format (default: markdown)'
+    )
+    meta_parser.add_argument(
+        '--verbose', '-v',
+        action='store_true',
+        help='Enable verbose logging'
+    )
+    meta_parser.add_argument(
+        '--quiet', '-q',
+        action='store_true',
+        help='Suppress output except errors'
+    )
+    meta_parser.add_argument(
+        '--database', '-d',
+        default=Config.DATABASE_PATH,
+        help=f'Database path (default: {Config.DATABASE_PATH})'
+    )
+    
+    # Statistics command
+    stats_parser = subparsers.add_parser('statistics', help='Generate analysis statistics and reports')
+    stats_parser.add_argument(
+        '--format', '-f',
+        choices=['table', 'json', 'markdown'],
+        default='table',
+        help='Output format (default: table)'
+    )
+    stats_parser.add_argument(
+        '--output', '-o',
+        help='Output file for statistics (default: console output)'
+    )
+    stats_parser.add_argument(
+        '--date-from',
+        help='Start date for statistics (YYYY-MM-DD)'
+    )
+    stats_parser.add_argument(
+        '--date-to',
+        help='End date for statistics (YYYY-MM-DD)'
+    )
+    stats_parser.add_argument(
+        '--agencies',
+        nargs='+',
+        help='Specific agencies to analyze'
+    )
+    stats_parser.add_argument(
+        '--include-patterns',
+        action='store_true',
+        help='Include pattern analysis'
+    )
+    stats_parser.add_argument(
+        '--include-costs',
+        action='store_true',
+        help='Include cost analysis'
+    )
+    stats_parser.add_argument(
+        '--verbose', '-v',
+        action='store_true',
+        help='Enable verbose logging'
+    )
+    stats_parser.add_argument(
+        '--quiet', '-q',
+        action='store_true',
+        help='Suppress output except errors'
+    )
+    stats_parser.add_argument(
+        '--database', '-d',
+        default=Config.DATABASE_PATH,
+        help=f'Database path (default: {Config.DATABASE_PATH})'
+    )
+    
+    # Sessions command
+    sessions_parser = subparsers.add_parser('sessions', help='Manage analysis sessions')
+    sessions_subparsers = sessions_parser.add_subparsers(dest='sessions_action', help='Session actions')
+    
+    # List sessions
+    list_sessions_parser = sessions_subparsers.add_parser('list', help='List analysis sessions')
+    list_sessions_parser.add_argument(
+        '--status',
+        choices=['created', 'running', 'completed', 'failed', 'cancelled'],
+        help='Filter by session status'
+    )
+    list_sessions_parser.add_argument(
+        '--limit', '-l',
+        type=int,
+        default=20,
+        help='Maximum number of sessions to show (default: 20)'
+    )
+    list_sessions_parser.add_argument(
+        '--format', '-f',
+        choices=['table', 'json'],
+        default='table',
+        help='Output format (default: table)'
+    )
+    
+    # Resume session
+    resume_session_parser = sessions_subparsers.add_parser('resume', help='Resume interrupted session')
+    resume_session_parser.add_argument(
+        '--session', '-s',
+        required=True,
+        help='Session ID to resume'
+    )
+    
+    # Cancel session
+    cancel_session_parser = sessions_subparsers.add_parser('cancel', help='Cancel running session')
+    cancel_session_parser.add_argument(
+        '--session', '-s',
+        required=True,
+        help='Session ID to cancel'
+    )
+    
+    # Archive session
+    archive_session_parser = sessions_subparsers.add_parser('archive', help='Archive session to file')
+    archive_session_parser.add_argument(
+        '--session', '-s',
+        required=True,
+        help='Session ID to archive'
+    )
+    archive_session_parser.add_argument(
+        '--output', '-o',
+        help='Archive file path (default: auto-generated)'
+    )
+    
+    # Cleanup sessions
+    cleanup_sessions_parser = sessions_subparsers.add_parser('cleanup', help='Clean up old sessions')
+    cleanup_sessions_parser.add_argument(
+        '--days-old',
+        type=int,
+        default=30,
+        help='Age threshold in days (default: 30)'
+    )
+    cleanup_sessions_parser.add_argument(
+        '--dry-run',
+        action='store_true',
+        help='Show what would be cleaned up without actually doing it'
+    )
+    
+    # Add common arguments to all session subcommands
+    for subparser in [list_sessions_parser, resume_session_parser, cancel_session_parser, 
+                     archive_session_parser, cleanup_sessions_parser]:
+        subparser.add_argument(
+            '--verbose', '-v',
+            action='store_true',
+            help='Enable verbose logging'
+        )
+        subparser.add_argument(
+            '--quiet', '-q',
+            action='store_true',
+            help='Suppress output except errors'
+        )
+        subparser.add_argument(
+            '--database', '-d',
+            default=Config.DATABASE_PATH,
+            help=f'Database path (default: {Config.DATABASE_PATH})'
+        )
+    
+    # Export command
+    export_parser = subparsers.add_parser('export', help='Export analysis results')
+    export_parser.add_argument(
+        '--session', '-s',
+        required=True,
+        help='Session ID to export'
+    )
+    export_parser.add_argument(
+        '--format', '-f',
+        choices=['json', 'csv', 'html', 'markdown', 'all'],
+        default='all',
+        help='Export format (default: all)'
+    )
+    export_parser.add_argument(
+        '--output-dir', '-o',
+        default='exports',
+        help='Output directory (default: exports)'
+    )
+    export_parser.add_argument(
+        '--include-meta-analysis',
+        action='store_true',
+        help='Include meta-analysis in export'
+    )
+    export_parser.add_argument(
+        '--include-raw-responses',
+        action='store_true',
+        help='Include raw LLM responses'
+    )
+    export_parser.add_argument(
+        '--verbose', '-v',
+        action='store_true',
+        help='Enable verbose logging'
+    )
+    export_parser.add_argument(
+        '--quiet', '-q',
+        action='store_true',
+        help='Suppress output except errors'
+    )
+    export_parser.add_argument(
         '--database', '-d',
         default=Config.DATABASE_PATH,
         help=f'Database path (default: {Config.DATABASE_PATH})'
@@ -464,6 +681,509 @@ def cmd_status(args: argparse.Namespace) -> int:
         return 1
 
 
+def cmd_meta_analysis(args: argparse.Namespace) -> int:
+    """Handle meta-analysis command."""
+    logger = logging.getLogger(__name__)
+    
+    try:
+        # Initialize components
+        database = Database(args.database)
+        engine = AnalysisEngine(database)
+        
+        logger.info(f"Starting meta-analysis for session: {args.session}")
+        
+        # Check if session exists
+        session_results = engine.get_analysis_results(args.session)
+        if not session_results:
+            print(f"Error: No analysis results found for session {args.session}", file=sys.stderr)
+            return 1
+        
+        print(f"Performing meta-analysis on {len(session_results)} document analyses...")
+        
+        # Perform meta-analysis
+        meta_analysis = engine.perform_meta_analysis(args.session)
+        
+        if not meta_analysis or not meta_analysis.success:
+            error_msg = meta_analysis.error_message if meta_analysis else "Unknown error"
+            print(f"Error: Meta-analysis failed: {error_msg}", file=sys.stderr)
+            return 1
+        
+        print(f"Meta-analysis completed successfully in {meta_analysis.processing_time:.2f}s")
+        
+        # Generate output
+        if args.output:
+            output_path = Path(args.output)
+        else:
+            # Auto-generate filename
+            timestamp = meta_analysis.created_at.strftime('%Y%m%d_%H%M%S') if meta_analysis.created_at else 'unknown'
+            filename = f"meta_analysis_{args.session}_{timestamp}.{args.format}"
+            output_path = Path(filename)
+        
+        # Save results based on format
+        if args.format == 'json':
+            save_meta_analysis_json(meta_analysis, output_path)
+        elif args.format == 'markdown':
+            save_meta_analysis_markdown(meta_analysis, output_path)
+        else:  # text
+            save_meta_analysis_text(meta_analysis, output_path)
+        
+        print(f"\nMeta-analysis results saved to: {output_path}")
+        
+        # Display summary
+        if not args.quiet:
+            print(f"\n=== META-ANALYSIS SUMMARY ===")
+            if meta_analysis.executive_summary:
+                print(f"\nExecutive Summary:")
+                print(f"  {meta_analysis.executive_summary}")
+            
+            if meta_analysis.key_patterns:
+                print(f"\nKey Patterns ({len(meta_analysis.key_patterns)}):")
+                for i, pattern in enumerate(meta_analysis.key_patterns[:3], 1):
+                    print(f"  {i}. {pattern}")
+            
+            if meta_analysis.priority_actions:
+                print(f"\nTop Priority Actions ({len(meta_analysis.priority_actions)}):")
+                for i, action in enumerate(meta_analysis.priority_actions[:3], 1):
+                    print(f"  {i}. {action}")
+            
+            if meta_analysis.quick_wins:
+                print(f"\nQuick Wins ({len(meta_analysis.quick_wins)}):")
+                for i, win in enumerate(meta_analysis.quick_wins[:3], 1):
+                    print(f"  {i}. {win}")
+        
+        engine.close()
+        return 0
+        
+    except Exception as e:
+        logger.error(f"Meta-analysis command failed: {e}")
+        print(f"Error: {e}", file=sys.stderr)
+        return 1
+
+
+def save_meta_analysis_json(meta_analysis, output_path: Path):
+    """Save meta-analysis results as JSON."""
+    import json
+    from datetime import datetime
+    
+    data = {
+        'session_id': meta_analysis.session_id,
+        'generated_at': datetime.now().isoformat(),
+        'processing_time': meta_analysis.processing_time,
+        'success': meta_analysis.success,
+        'key_patterns': meta_analysis.key_patterns,
+        'strategic_themes': meta_analysis.strategic_themes,
+        'priority_actions': meta_analysis.priority_actions,
+        'goal_alignment': meta_analysis.goal_alignment,
+        'implementation_roadmap': meta_analysis.implementation_roadmap,
+        'executive_summary': meta_analysis.executive_summary,
+        'reform_opportunities': meta_analysis.reform_opportunities,
+        'implementation_challenges': meta_analysis.implementation_challenges,
+        'stakeholder_impact': meta_analysis.stakeholder_impact,
+        'resource_requirements': meta_analysis.resource_requirements,
+        'risk_assessment': meta_analysis.risk_assessment,
+        'quick_wins': meta_analysis.quick_wins,
+        'long_term_strategy': meta_analysis.long_term_strategy
+    }
+    
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    with open(output_path, 'w', encoding='utf-8') as f:
+        json.dump(data, f, indent=2, ensure_ascii=False)
+
+
+def save_meta_analysis_markdown(meta_analysis, output_path: Path):
+    """Save meta-analysis results as Markdown."""
+    from datetime import datetime
+    
+    content = [
+        f"# Meta-Analysis Report",
+        f"",
+        f"**Session ID:** {meta_analysis.session_id}",
+        f"**Generated:** {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}",
+        f"**Processing Time:** {meta_analysis.processing_time:.2f} seconds",
+        f"",
+    ]
+    
+    if meta_analysis.executive_summary:
+        content.extend([
+            f"## Executive Summary",
+            f"",
+            f"{meta_analysis.executive_summary}",
+            f"",
+        ])
+    
+    if meta_analysis.key_patterns:
+        content.extend([
+            f"## Key Patterns",
+            f"",
+        ])
+        for pattern in meta_analysis.key_patterns:
+            content.append(f"- {pattern}")
+        content.append("")
+    
+    if meta_analysis.strategic_themes:
+        content.extend([
+            f"## Strategic Themes",
+            f"",
+        ])
+        for theme in meta_analysis.strategic_themes:
+            content.append(f"- {theme}")
+        content.append("")
+    
+    if meta_analysis.priority_actions:
+        content.extend([
+            f"## Priority Actions",
+            f"",
+        ])
+        for i, action in enumerate(meta_analysis.priority_actions, 1):
+            content.append(f"{i}. {action}")
+        content.append("")
+    
+    if meta_analysis.quick_wins:
+        content.extend([
+            f"## Quick Wins",
+            f"",
+        ])
+        for win in meta_analysis.quick_wins:
+            content.append(f"- {win}")
+        content.append("")
+    
+    if meta_analysis.reform_opportunities:
+        content.extend([
+            f"## Reform Opportunities",
+            f"",
+        ])
+        for opportunity in meta_analysis.reform_opportunities:
+            content.append(f"- {opportunity}")
+        content.append("")
+    
+    if meta_analysis.implementation_challenges:
+        content.extend([
+            f"## Implementation Challenges",
+            f"",
+        ])
+        for challenge in meta_analysis.implementation_challenges:
+            content.append(f"- {challenge}")
+        content.append("")
+    
+    if meta_analysis.goal_alignment:
+        content.extend([
+            f"## Goal Alignment",
+            f"",
+            f"{meta_analysis.goal_alignment}",
+            f"",
+        ])
+    
+    if meta_analysis.implementation_roadmap:
+        content.extend([
+            f"## Implementation Roadmap",
+            f"",
+            f"{meta_analysis.implementation_roadmap}",
+            f"",
+        ])
+    
+    if meta_analysis.long_term_strategy:
+        content.extend([
+            f"## Long-Term Strategy",
+            f"",
+            f"{meta_analysis.long_term_strategy}",
+            f"",
+        ])
+    
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    with open(output_path, 'w', encoding='utf-8') as f:
+        f.write('\n'.join(content))
+
+
+def save_meta_analysis_text(meta_analysis, output_path: Path):
+    """Save meta-analysis results as plain text."""
+    from datetime import datetime
+    
+    content = [
+        f"META-ANALYSIS REPORT",
+        f"=" * 50,
+        f"",
+        f"Session ID: {meta_analysis.session_id}",
+        f"Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}",
+        f"Processing Time: {meta_analysis.processing_time:.2f} seconds",
+        f"",
+    ]
+    
+    if meta_analysis.executive_summary:
+        content.extend([
+            f"EXECUTIVE SUMMARY",
+            f"-" * 20,
+            f"{meta_analysis.executive_summary}",
+            f"",
+        ])
+    
+    if meta_analysis.key_patterns:
+        content.extend([
+            f"KEY PATTERNS",
+            f"-" * 15,
+        ])
+        for i, pattern in enumerate(meta_analysis.key_patterns, 1):
+            content.append(f"{i}. {pattern}")
+        content.append("")
+    
+    if meta_analysis.priority_actions:
+        content.extend([
+            f"PRIORITY ACTIONS",
+            f"-" * 20,
+        ])
+        for i, action in enumerate(meta_analysis.priority_actions, 1):
+            content.append(f"{i}. {action}")
+        content.append("")
+    
+    if meta_analysis.quick_wins:
+        content.extend([
+            f"QUICK WINS",
+            f"-" * 15,
+        ])
+        for i, win in enumerate(meta_analysis.quick_wins, 1):
+            content.append(f"{i}. {win}")
+        content.append("")
+    
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    with open(output_path, 'w', encoding='utf-8') as f:
+        f.write('\n'.join(content))
+
+
+def cmd_statistics(args: argparse.Namespace) -> int:
+    """Handle statistics command."""
+    logger = logging.getLogger(__name__)
+    
+    try:
+        # Initialize components
+        database = Database(args.database)
+        stats_engine = StatisticsEngine(database)
+        
+        logger.info("Generating statistics report")
+        
+        # Get overall statistics
+        overall_stats = stats_engine.get_overall_statistics(
+            date_from=args.date_from,
+            date_to=args.date_to
+        )
+        
+        # Generate report based on format
+        if args.format == 'json':
+            report_data = {
+                'overall_statistics': {
+                    'total_documents': overall_stats.total_documents,
+                    'total_sessions': overall_stats.total_sessions,
+                    'success_rate': overall_stats.success_rate,
+                    'average_processing_time': overall_stats.average_processing_time,
+                    'date_range': overall_stats.date_range
+                },
+                'category_distribution': overall_stats.category_distribution,
+                'agency_distribution': dict(list(overall_stats.agency_distribution.items())[:20])
+            }
+            
+            # Add pattern analysis if requested
+            if args.include_patterns:
+                patterns = stats_engine.analyze_patterns()
+                report_data['pattern_analysis'] = {
+                    'common_statutory_references': patterns.common_statutory_references[:10],
+                    'frequent_reform_recommendations': patterns.frequent_reform_recommendations[:10]
+                }
+            
+            # Add cost analysis if requested
+            if args.include_costs:
+                report_data['cost_analysis'] = stats_engine.generate_cost_analysis()
+            
+            output = json.dumps(report_data, indent=2, ensure_ascii=False)
+            
+        elif args.format == 'markdown':
+            output = stats_engine.generate_comprehensive_report('markdown')
+            
+        else:  # table format
+            output = f"""
+CFR DOCUMENT ANALYZER STATISTICS
+{'='*50}
+
+OVERALL STATISTICS:
+  Total Documents Analyzed: {overall_stats.total_documents:,}
+  Total Sessions: {overall_stats.total_sessions:,}
+  Success Rate: {overall_stats.success_rate:.1f}%
+  Average Processing Time: {overall_stats.average_processing_time:.2f} seconds
+  Date Range: {overall_stats.date_range[0]} to {overall_stats.date_range[1]}
+
+CATEGORY DISTRIBUTION:
+"""
+            for category, count in overall_stats.category_distribution.items():
+                percentage = (count / max(1, overall_stats.total_documents)) * 100
+                output += f"  {category}: {count:,} ({percentage:.1f}%)\n"
+            
+            output += "\nTOP AGENCIES:\n"
+            for agency, count in list(overall_stats.agency_distribution.items())[:10]:
+                output += f"  {agency}: {count:,} documents\n"
+        
+        # Output results
+        if args.output:
+            output_path = Path(args.output)
+            output_path.parent.mkdir(parents=True, exist_ok=True)
+            with open(output_path, 'w', encoding='utf-8') as f:
+                f.write(output)
+            print(f"Statistics saved to: {output_path}")
+        else:
+            print(output)
+        
+        return 0
+        
+    except Exception as e:
+        logger.error(f"Statistics command failed: {e}")
+        print(f"Error: {e}", file=sys.stderr)
+        return 1
+
+
+def cmd_sessions(args: argparse.Namespace) -> int:
+    """Handle sessions command."""
+    logger = logging.getLogger(__name__)
+    
+    try:
+        # Initialize components
+        database = Database(args.database)
+        session_manager = SessionManager(database)
+        
+        if args.sessions_action == 'list':
+            # List sessions
+            status_filter = SessionStatus(args.status) if args.status else None
+            sessions = session_manager.list_sessions(limit=args.limit, status_filter=status_filter)
+            
+            if not sessions:
+                print("No sessions found.")
+                return 0
+            
+            if args.format == 'json':
+                session_data = []
+                for session in sessions:
+                    session_data.append({
+                        'session_id': session.session_id,
+                        'agency_slugs': session.agency_slugs,
+                        'prompt_strategy': session.prompt_strategy,
+                        'document_limit': session.document_limit,
+                        'status': session.status.value,
+                        'documents_processed': session.documents_processed,
+                        'total_documents': session.total_documents,
+                        'progress_percentage': session.progress_percentage,
+                        'created_at': session.created_at.isoformat() if session.created_at else None,
+                        'completed_at': session.completed_at.isoformat() if session.completed_at else None
+                    })
+                
+                print(json.dumps(session_data, indent=2, ensure_ascii=False))
+            
+            else:  # table format
+                print(f"\n{'Session ID':<30} {'Agencies':<40} {'Status':<12} {'Progress':<12} {'Created':<20}")
+                print("-" * 120)
+                
+                for session in sessions:
+                    agencies_str = ", ".join(session.agency_slugs)[:35] + "..." if len(", ".join(session.agency_slugs)) > 35 else ", ".join(session.agency_slugs)
+                    progress_str = f"{session.documents_processed}/{session.total_documents}"
+                    created_str = session.created_at.strftime("%Y-%m-%d %H:%M") if session.created_at else "Unknown"
+                    
+                    print(f"{session.session_id:<30} {agencies_str:<40} {session.status.value:<12} {progress_str:<12} {created_str:<20}")
+        
+        elif args.sessions_action == 'resume':
+            # Resume session
+            session = session_manager.resume_session(args.session)
+            if session:
+                print(f"Resumed session: {args.session}")
+                print(f"Status: {session.status.value}")
+                print(f"Progress: {session.documents_processed}/{session.total_documents}")
+            else:
+                print(f"Failed to resume session: {args.session}")
+                return 1
+        
+        elif args.sessions_action == 'cancel':
+            # Cancel session
+            success = session_manager.cancel_session(args.session)
+            if success:
+                print(f"Cancelled session: {args.session}")
+            else:
+                print(f"Failed to cancel session: {args.session}")
+                return 1
+        
+        elif args.sessions_action == 'archive':
+            # Archive session
+            success = session_manager.archive_session(args.session, args.output)
+            if success:
+                archive_path = args.output or f"{args.session}_archive.json"
+                print(f"Archived session {args.session} to: {archive_path}")
+            else:
+                print(f"Failed to archive session: {args.session}")
+                return 1
+        
+        elif args.sessions_action == 'cleanup':
+            # Cleanup old sessions
+            if args.dry_run:
+                print(f"Dry run: Would clean up sessions older than {args.days_old} days")
+                # This would show what would be cleaned up
+                print("(Dry run functionality not implemented)")
+            else:
+                cleaned_count = session_manager.cleanup_old_sessions(args.days_old)
+                print(f"Cleaned up {cleaned_count} old sessions")
+        
+        return 0
+        
+    except Exception as e:
+        logger.error(f"Sessions command failed: {e}")
+        print(f"Error: {e}", file=sys.stderr)
+        return 1
+
+
+def cmd_export(args: argparse.Namespace) -> int:
+    """Handle export command."""
+    logger = logging.getLogger(__name__)
+    
+    try:
+        # Initialize components
+        database = Database(args.database)
+        engine = AnalysisEngine(database)
+        export_manager = ExportManager(args.output_dir)
+        
+        logger.info(f"Exporting results for session: {args.session}")
+        
+        # Get session results
+        results = engine.get_session_results(args.session)
+        
+        if not results:
+            print(f"No results found for session: {args.session}")
+            return 1
+        
+        # Determine export formats
+        if args.format == 'all':
+            formats = ['json', 'csv', 'html']
+        else:
+            formats = [args.format]
+        
+        # Export results
+        exported_files = export_manager.export_session_results(
+            results, args.session, formats
+        )
+        
+        print(f"Exported {len(results)} results in {len(formats)} format(s):")
+        for format_type, filepath in exported_files.items():
+            print(f"  {format_type.upper()}: {filepath}")
+        
+        # Export meta-analysis if requested
+        if args.include_meta_analysis:
+            meta_analysis = engine.get_meta_analysis(args.session)
+            if meta_analysis:
+                # Save meta-analysis as markdown
+                meta_path = Path(args.output_dir) / f"meta_analysis_{args.session}.md"
+                save_meta_analysis_markdown(meta_analysis, meta_path)
+                print(f"  META-ANALYSIS: {meta_path}")
+            else:
+                print("  Meta-analysis not available for this session")
+        
+        return 0
+        
+    except Exception as e:
+        logger.error(f"Export command failed: {e}")
+        print(f"Error: {e}", file=sys.stderr)
+        return 1
+
+
 def save_results_to_file(results: List[dict], output_path: str, session_id: str):
     """Save analysis results to file."""
     import json
@@ -512,6 +1232,14 @@ def main() -> int:
         return cmd_list_agencies(args)
     elif args.command == 'status':
         return cmd_status(args)
+    elif args.command == 'meta-analysis':
+        return cmd_meta_analysis(args)
+    elif args.command == 'statistics':
+        return cmd_statistics(args)
+    elif args.command == 'sessions':
+        return cmd_sessions(args)
+    elif args.command == 'export':
+        return cmd_export(args)
     else:
         parser.print_help()
         return 1

@@ -15,7 +15,7 @@ from .database import Database
 from .document_retriever import DocumentRetriever
 from .llm_client import LLMClient
 from .prompt_manager import PromptManager
-from .models import Document, AnalysisResult, AnalysisSession, SessionStatus, RegulationCategory
+from .models import Document, AnalysisResult, AnalysisSession, SessionStatus, RegulationCategory, MetaAnalysis
 from .utils import safe_json_dumps, format_timestamp
 
 
@@ -317,6 +317,123 @@ class AnalysisEngine:
             'total_time': stats.total_time,
             'average_time_per_call': (stats.total_time / stats.total_calls) if stats.total_calls > 0 else 0
         }
+    
+    def perform_meta_analysis(self, session_id: str) -> Optional[MetaAnalysis]:
+        """
+        Perform meta-analysis on the results of an analysis session.
+        
+        Args:
+            session_id: Session identifier
+            
+        Returns:
+            MetaAnalysis object or None if failed
+        """
+        try:
+            logger.info(f"Starting meta-analysis for session: {session_id}")
+            
+            # Get analysis results for the session
+            analysis_results = self.get_analysis_results(session_id)
+            
+            if not analysis_results:
+                logger.warning(f"No analysis results found for session: {session_id}")
+                return None
+            
+            # Perform meta-analysis using LLM client
+            meta_analysis = self.llm_client.perform_meta_analysis(analysis_results, session_id)
+            
+            if meta_analysis.success:
+                # Store meta-analysis in database
+                meta_data = {
+                    'session_id': session_id,
+                    'key_patterns': safe_json_dumps(meta_analysis.key_patterns),
+                    'strategic_themes': safe_json_dumps(meta_analysis.strategic_themes),
+                    'priority_actions': safe_json_dumps(meta_analysis.priority_actions),
+                    'goal_alignment': meta_analysis.goal_alignment,
+                    'implementation_roadmap': meta_analysis.implementation_roadmap,
+                    'executive_summary': meta_analysis.executive_summary,
+                    'reform_opportunities': safe_json_dumps(meta_analysis.reform_opportunities),
+                    'implementation_challenges': safe_json_dumps(meta_analysis.implementation_challenges),
+                    'stakeholder_impact': meta_analysis.stakeholder_impact,
+                    'resource_requirements': meta_analysis.resource_requirements,
+                    'risk_assessment': meta_analysis.risk_assessment,
+                    'quick_wins': safe_json_dumps(meta_analysis.quick_wins),
+                    'long_term_strategy': meta_analysis.long_term_strategy,
+                    'processing_time': meta_analysis.processing_time,
+                    'success': meta_analysis.success,
+                    'error_message': meta_analysis.error_message
+                }
+                
+                meta_id = self.database.store_meta_analysis(meta_data)
+                logger.info(f"Meta-analysis completed and stored with ID: {meta_id}")
+                
+                return meta_analysis
+            else:
+                logger.error(f"Meta-analysis failed: {meta_analysis.error_message}")
+                return meta_analysis
+                
+        except Exception as e:
+            logger.error(f"Error performing meta-analysis for session {session_id}: {e}")
+            return MetaAnalysis(
+                session_id=session_id,
+                success=False,
+                error_message=str(e)
+            )
+    
+    def get_meta_analysis(self, session_id: str) -> Optional[MetaAnalysis]:
+        """
+        Get meta-analysis results for a session.
+        
+        Args:
+            session_id: Session identifier
+            
+        Returns:
+            MetaAnalysis object or None if not found
+        """
+        try:
+            meta_data = self.database.get_meta_analysis_by_session(session_id)
+            
+            if not meta_data:
+                return None
+            
+            # Convert database record to MetaAnalysis object
+            meta_analysis = MetaAnalysis(
+                session_id=meta_data['session_id'],
+                key_patterns=safe_json_loads(meta_data.get('key_patterns', '[]')),
+                strategic_themes=safe_json_loads(meta_data.get('strategic_themes', '[]')),
+                priority_actions=safe_json_loads(meta_data.get('priority_actions', '[]')),
+                goal_alignment=meta_data.get('goal_alignment'),
+                implementation_roadmap=meta_data.get('implementation_roadmap'),
+                executive_summary=meta_data.get('executive_summary'),
+                reform_opportunities=safe_json_loads(meta_data.get('reform_opportunities', '[]')),
+                implementation_challenges=safe_json_loads(meta_data.get('implementation_challenges', '[]')),
+                stakeholder_impact=meta_data.get('stakeholder_impact'),
+                resource_requirements=meta_data.get('resource_requirements'),
+                risk_assessment=meta_data.get('risk_assessment'),
+                quick_wins=safe_json_loads(meta_data.get('quick_wins', '[]')),
+                long_term_strategy=meta_data.get('long_term_strategy'),
+                processing_time=meta_data.get('processing_time', 0.0),
+                success=bool(meta_data.get('success', True)),
+                error_message=meta_data.get('error_message'),
+                created_at=meta_data.get('created_at')
+            )
+            
+            return meta_analysis
+            
+        except Exception as e:
+            logger.error(f"Error retrieving meta-analysis for session {session_id}: {e}")
+            return None
+    
+    def get_session_results(self, session_id: str) -> List[Dict[str, Any]]:
+        """
+        Get complete session results including analysis and meta-analysis.
+        
+        Args:
+            session_id: Session identifier
+            
+        Returns:
+            List of analysis result dictionaries
+        """
+        return self.get_analysis_results(session_id)
     
     def close(self):
         """Clean up resources."""

@@ -131,6 +131,304 @@ Regulation text:
             logger.info("Loaded DOGE Criteria prompt package")
         else:
             logger.error("Failed to validate DOGE Criteria prompt package")
+        
+        # Meta-analysis prompts for synthesizing multiple document analyses
+        meta_analysis_prompts = [
+            """You are analyzing a collection of regulatory document analyses to provide strategic insights and recommendations.
+
+Based on the following analysis results, provide a comprehensive meta-analysis that synthesizes patterns, identifies key themes, and recommends strategic actions.
+
+ANALYSIS RESULTS:
+{text}
+
+Provide your meta-analysis in the following structured format:
+
+KEY PATTERNS:
+- [List 3-5 major patterns observed across the analyzed documents]
+
+STRATEGIC THEMES:
+- [Identify 3-5 overarching themes that emerge from the analysis]
+
+PRIORITY ACTIONS:
+- [List 5-7 specific actions ranked by priority and impact]
+
+GOAL ALIGNMENT:
+- [Assess how well current regulations align with stated policy goals]
+
+IMPLEMENTATION ROADMAP:
+- [Provide a high-level roadmap for implementing recommended changes]
+
+SUMMARY:
+[Provide a 2-3 sentence executive summary of the most critical findings]""",
+
+            """Analyze the following regulatory analysis results to identify reform opportunities and potential challenges.
+
+ANALYSIS DATA:
+{text}
+
+Focus on providing actionable insights in this format:
+
+REFORM OPPORTUNITIES:
+• [List specific opportunities for regulatory reform with expected impact]
+
+IMPLEMENTATION CHALLENGES:
+• [Identify potential obstacles and resistance points]
+
+STAKEHOLDER IMPACT:
+• [Assess impact on different stakeholder groups]
+
+RESOURCE REQUIREMENTS:
+• [Estimate resources needed for implementation]
+
+RISK ASSESSMENT:
+• [Identify key risks and mitigation strategies]
+
+QUICK WINS:
+• [List actions that can be implemented quickly with high impact]
+
+LONG-TERM STRATEGY:
+• [Outline strategic approach for comprehensive reform]"""
+        ]
+        
+        meta_package = PromptPackage(
+            name="Meta-Analysis",
+            description="Meta-analysis prompts for synthesizing multiple document analyses and providing strategic insights",
+            prompts=meta_analysis_prompts
+        )
+        
+        if meta_package.validate():
+            self.packages["Meta-Analysis"] = meta_package
+            logger.info("Loaded Meta-Analysis prompt package")
+        else:
+            logger.error("Failed to validate Meta-Analysis prompt package")
+        
+        # Blue Dreams prompt package
+        blue_dreams_prompts = [
+            """Analyze the following regulation through the lens of the Blue Dreams framework, focusing on innovation, efficiency, and citizen-centric governance.
+
+Evaluate how this regulation:
+- Promotes or hinders innovation and technological advancement
+- Supports efficient government operations
+- Serves citizen needs and improves public outcomes
+- Aligns with modern governance principles
+
+Provide your analysis in this format:
+
+INNOVATION IMPACT:
+- [Assess impact on innovation and technology adoption]
+
+EFFICIENCY ASSESSMENT:
+- [Evaluate operational efficiency and resource utilization]
+
+CITIZEN BENEFIT:
+- [Analyze benefits and burdens for citizens and businesses]
+
+MODERNIZATION OPPORTUNITIES:
+- [Identify specific opportunities for improvement]
+
+BLUE DREAMS SCORE: [1-10 scale where 10 = fully aligned with Blue Dreams principles]
+
+RECOMMENDATIONS:
+- [List specific recommendations for alignment with Blue Dreams vision]
+
+Regulation text:
+{text}""",
+
+            """Evaluate this regulation's alignment with Blue Dreams principles of streamlined, technology-enabled government that serves citizens effectively.
+
+Focus on:
+- Digital transformation opportunities
+- Bureaucratic burden reduction
+- Stakeholder experience improvement
+- Data-driven decision making
+
+Provide recommendations in this format:
+
+DIGITAL TRANSFORMATION:
+- [Opportunities for digital solutions and automation]
+
+BURDEN REDUCTION:
+- [Ways to reduce bureaucratic complexity]
+
+USER EXPERIENCE:
+- [Improvements for citizen/business interactions]
+
+DATA UTILIZATION:
+- [Better use of data for decision making]
+
+IMPLEMENTATION ROADMAP:
+- [Practical steps for Blue Dreams alignment]
+
+Regulation text:
+{text}"""
+        ]
+        
+        blue_dreams_package = PromptPackage(
+            name="Blue Dreams",
+            description="Blue Dreams framework for innovation-focused, citizen-centric governance analysis",
+            prompts=blue_dreams_prompts
+        )
+        
+        if blue_dreams_package.validate():
+            self.packages["Blue Dreams"] = blue_dreams_package
+            logger.info("Loaded Blue Dreams prompt package")
+        else:
+            logger.error("Failed to validate Blue Dreams prompt package")
+        
+        # EO 14219 prompt package
+        eo_14219_prompts = [
+            """Analyze this regulation in the context of Executive Order 14219 on Advancing Effective, Accountable, and Transparent Government.
+
+Evaluate compliance with EO 14219 principles:
+- Transparency and public participation
+- Accountability and performance measurement
+- Effectiveness and evidence-based policy
+- Equity and accessibility
+
+Provide analysis in this format:
+
+TRANSPARENCY ASSESSMENT:
+- [Evaluate transparency and public access to information]
+
+ACCOUNTABILITY MEASURES:
+- [Assess accountability mechanisms and performance metrics]
+
+EFFECTIVENESS EVALUATION:
+- [Analyze evidence base and policy effectiveness]
+
+EQUITY CONSIDERATIONS:
+- [Review equity impacts and accessibility]
+
+EO 14219 COMPLIANCE SCORE: [1-10 scale]
+
+IMPROVEMENT RECOMMENDATIONS:
+- [Specific recommendations for better EO 14219 alignment]
+
+Regulation text:
+{text}""",
+
+            """Review this regulation for alignment with Executive Order 14219's requirements for effective, accountable, and transparent government operations.
+
+Focus on:
+- Public engagement and participation opportunities
+- Performance measurement and evaluation
+- Evidence-based policy development
+- Equitable access and outcomes
+
+Analysis format:
+
+PUBLIC ENGAGEMENT:
+- [Assessment of public participation mechanisms]
+
+PERFORMANCE METRICS:
+- [Evaluation of measurement and accountability systems]
+
+EVIDENCE BASE:
+- [Review of supporting evidence and data]
+
+EQUITY ANALYSIS:
+- [Assessment of equitable access and outcomes]
+
+COMPLIANCE GAPS:
+- [Identification of areas needing improvement]
+
+ACTION PLAN:
+- [Specific steps for enhanced EO 14219 compliance]
+
+Regulation text:
+{text}"""
+        ]
+        
+        eo_14219_package = PromptPackage(
+            name="EO 14219",
+            description="Executive Order 14219 analysis for effective, accountable, and transparent government",
+            prompts=eo_14219_prompts
+        )
+        
+        if eo_14219_package.validate():
+            self.packages["EO 14219"] = eo_14219_package
+            logger.info("Loaded EO 14219 prompt package")
+        else:
+            logger.error("Failed to validate EO 14219 prompt package")
+        
+        # Technical Competence prompt package
+        technical_competence_prompts = [
+            """Analyze this regulation from a technical competence perspective, evaluating the technical accuracy, feasibility, and implementation requirements.
+
+Assess:
+- Technical accuracy and scientific validity
+- Implementation feasibility and resource requirements
+- Compliance monitoring and enforcement mechanisms
+- Industry best practices alignment
+
+Provide analysis in this format:
+
+TECHNICAL ACCURACY:
+- [Evaluation of technical and scientific validity]
+
+IMPLEMENTATION FEASIBILITY:
+- [Assessment of practical implementation challenges]
+
+RESOURCE REQUIREMENTS:
+- [Analysis of human, financial, and technical resources needed]
+
+COMPLIANCE MECHANISMS:
+- [Review of monitoring and enforcement approaches]
+
+INDUSTRY ALIGNMENT:
+- [Comparison with industry standards and best practices]
+
+TECHNICAL COMPETENCE SCORE: [1-10 scale]
+
+TECHNICAL RECOMMENDATIONS:
+- [Specific technical improvements and considerations]
+
+Regulation text:
+{text}""",
+
+            """Evaluate this regulation's technical merit, implementation practicality, and alignment with established technical standards and best practices.
+
+Focus on:
+- Scientific and technical foundation
+- Practical implementation considerations
+- Resource and capability requirements
+- Measurable outcomes and success criteria
+
+Analysis format:
+
+TECHNICAL FOUNDATION:
+- [Assessment of underlying technical/scientific basis]
+
+IMPLEMENTATION ANALYSIS:
+- [Practical considerations for implementation]
+
+CAPABILITY REQUIREMENTS:
+- [Skills, systems, and resources needed]
+
+SUCCESS METRICS:
+- [Measurable outcomes and evaluation criteria]
+
+RISK ASSESSMENT:
+- [Technical and implementation risks]
+
+OPTIMIZATION OPPORTUNITIES:
+- [Ways to improve technical effectiveness]
+
+Regulation text:
+{text}"""
+        ]
+        
+        technical_competence_package = PromptPackage(
+            name="Technical Competence",
+            description="Technical competence analysis focusing on accuracy, feasibility, and best practices",
+            prompts=technical_competence_prompts
+        )
+        
+        if technical_competence_package.validate():
+            self.packages["Technical Competence"] = technical_competence_package
+            logger.info("Loaded Technical Competence prompt package")
+        else:
+            logger.error("Failed to validate Technical Competence prompt package")
     
     def get_prompt_package(self, package_name: str) -> Optional[PromptPackage]:
         """
@@ -315,6 +613,228 @@ Regulation text:
             'prompt_count': len(package.prompts),
             'total_length': sum(len(p) for p in package.prompts)
         }
+    
+    def create_custom_prompt_package(self, name: str, description: str, prompts: List[str], 
+                                   version: str = "1.0") -> bool:
+        """
+        Create a custom prompt package with validation.
+        
+        Args:
+            name: Package name
+            description: Package description
+            prompts: List of prompt templates
+            version: Package version
+            
+        Returns:
+            True if successful, False otherwise
+        """
+        try:
+            # Validate inputs
+            if not name or not description or not prompts:
+                logger.error("Name, description, and prompts are required")
+                return False
+            
+            # Check if package already exists
+            if name in self.packages:
+                logger.warning(f"Package '{name}' already exists. Use update_package to modify.")
+                return False
+            
+            # Validate prompts
+            validation_errors = self.validate_prompts(prompts)
+            if validation_errors:
+                logger.error(f"Prompt validation failed: {validation_errors}")
+                return False
+            
+            # Create package
+            package = PromptPackage(
+                name=name,
+                description=description,
+                prompts=prompts,
+                version=version
+            )
+            
+            if package.validate():
+                self.packages[name] = package
+                logger.info(f"Created custom prompt package: {name}")
+                return True
+            else:
+                logger.error(f"Package validation failed for: {name}")
+                return False
+                
+        except Exception as e:
+            logger.error(f"Error creating custom package {name}: {e}")
+            return False
+    
+    def update_package(self, package_name: str, **updates) -> bool:
+        """
+        Update an existing prompt package.
+        
+        Args:
+            package_name: Name of package to update
+            **updates: Fields to update (description, prompts, version)
+            
+        Returns:
+            True if successful, False otherwise
+        """
+        try:
+            if package_name not in self.packages:
+                logger.error(f"Package not found: {package_name}")
+                return False
+            
+            package = self.packages[package_name]
+            
+            # Update fields
+            if 'description' in updates:
+                package.description = updates['description']
+            
+            if 'version' in updates:
+                package.version = updates['version']
+            
+            if 'prompts' in updates:
+                new_prompts = updates['prompts']
+                validation_errors = self.validate_prompts(new_prompts)
+                if validation_errors:
+                    logger.error(f"Prompt validation failed: {validation_errors}")
+                    return False
+                package.prompts = new_prompts
+            
+            # Validate updated package
+            if package.validate():
+                logger.info(f"Updated prompt package: {package_name}")
+                return True
+            else:
+                logger.error(f"Package validation failed after update: {package_name}")
+                return False
+                
+        except Exception as e:
+            logger.error(f"Error updating package {package_name}: {e}")
+            return False
+    
+    def delete_package(self, package_name: str) -> bool:
+        """
+        Delete a prompt package.
+        
+        Args:
+            package_name: Name of package to delete
+            
+        Returns:
+            True if successful, False otherwise
+        """
+        try:
+            # Prevent deletion of core packages
+            core_packages = ["DOGE Criteria", "Meta-Analysis"]
+            if package_name in core_packages:
+                logger.error(f"Cannot delete core package: {package_name}")
+                return False
+            
+            if package_name in self.packages:
+                del self.packages[package_name]
+                logger.info(f"Deleted prompt package: {package_name}")
+                return True
+            else:
+                logger.warning(f"Package not found: {package_name}")
+                return False
+                
+        except Exception as e:
+            logger.error(f"Error deleting package {package_name}: {e}")
+            return False
+    
+    def test_prompt_package(self, package_name: str, test_text: str = None) -> Dict[str, Any]:
+        """
+        Test a prompt package with sample text.
+        
+        Args:
+            package_name: Name of package to test
+            test_text: Sample text for testing (optional)
+            
+        Returns:
+            Dictionary with test results
+        """
+        try:
+            package = self.packages.get(package_name)
+            if not package:
+                return {'success': False, 'error': f'Package not found: {package_name}'}
+            
+            test_text = test_text or "This is a sample regulation for testing prompt formatting."
+            
+            test_results = {
+                'success': True,
+                'package_name': package_name,
+                'prompt_count': len(package.prompts),
+                'formatted_prompts': []
+            }
+            
+            # Test each prompt
+            for i, prompt in enumerate(package.prompts):
+                try:
+                    formatted = prompt.format(text=test_text)
+                    test_results['formatted_prompts'].append({
+                        'prompt_index': i,
+                        'length': len(formatted),
+                        'success': True,
+                        'preview': formatted[:200] + "..." if len(formatted) > 200 else formatted
+                    })
+                except Exception as e:
+                    test_results['formatted_prompts'].append({
+                        'prompt_index': i,
+                        'success': False,
+                        'error': str(e)
+                    })
+            
+            return test_results
+            
+        except Exception as e:
+            return {'success': False, 'error': str(e)}
+    
+    def export_package_to_dict(self, package_name: str) -> Optional[Dict[str, Any]]:
+        """
+        Export a package to dictionary format.
+        
+        Args:
+            package_name: Name of package to export
+            
+        Returns:
+            Package dictionary or None
+        """
+        package = self.packages.get(package_name)
+        if not package:
+            return None
+        
+        return {
+            'name': package.name,
+            'description': package.description,
+            'version': package.version,
+            'prompts': package.prompts,
+            'exported_at': datetime.now().isoformat()
+        }
+    
+    def import_package_from_dict(self, package_data: Dict[str, Any]) -> bool:
+        """
+        Import a package from dictionary format.
+        
+        Args:
+            package_data: Package data dictionary
+            
+        Returns:
+            True if successful, False otherwise
+        """
+        try:
+            required_fields = ['name', 'description', 'prompts']
+            for field in required_fields:
+                if field not in package_data:
+                    logger.error(f"Missing required field: {field}")
+                    return False
+            
+            return self.create_custom_prompt_package(
+                name=package_data['name'],
+                description=package_data['description'],
+                prompts=package_data['prompts'],
+                version=package_data.get('version', '1.0')
+            )
+            
+        except Exception as e:
+            logger.error(f"Error importing package: {e}")
+            return False
     
     def format_prompt(self, package_name: str, prompt_index: int, document_text: str) -> Optional[str]:
         """

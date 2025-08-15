@@ -106,11 +106,38 @@ class Database:
                     agency_slugs TEXT,  -- JSON array
                     prompt_strategy TEXT NOT NULL,
                     document_limit INTEGER,
-                    status TEXT DEFAULT 'created',  -- created, running, completed, failed
+                    status TEXT DEFAULT 'created',  -- created, running, completed, failed, cancelled
                     documents_processed INTEGER DEFAULT 0,
                     total_documents INTEGER DEFAULT 0,
+                    config TEXT,  -- JSON configuration data
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     completed_at TIMESTAMP
+                )
+            """)
+            
+            # Meta-analyses table for storing meta-analysis results
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS meta_analyses (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    session_id TEXT NOT NULL,
+                    key_patterns TEXT,  -- JSON array
+                    strategic_themes TEXT,  -- JSON array
+                    priority_actions TEXT,  -- JSON array
+                    goal_alignment TEXT,
+                    implementation_roadmap TEXT,
+                    executive_summary TEXT,
+                    reform_opportunities TEXT,  -- JSON array
+                    implementation_challenges TEXT,  -- JSON array
+                    stakeholder_impact TEXT,
+                    resource_requirements TEXT,
+                    risk_assessment TEXT,
+                    quick_wins TEXT,  -- JSON array
+                    long_term_strategy TEXT,
+                    processing_time REAL,
+                    success BOOLEAN DEFAULT 1,
+                    error_message TEXT,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    FOREIGN KEY (session_id) REFERENCES sessions (session_id)
                 )
             """)
             
@@ -119,6 +146,7 @@ class Database:
             cursor.execute("CREATE INDEX IF NOT EXISTS idx_documents_number ON documents(document_number)")
             cursor.execute("CREATE INDEX IF NOT EXISTS idx_analyses_document ON analyses(document_id)")
             cursor.execute("CREATE INDEX IF NOT EXISTS idx_sessions_id ON sessions(session_id)")
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_meta_analyses_session ON meta_analyses(session_id)")
             
             conn.commit()
             logger.info("Database initialized successfully")
@@ -279,3 +307,65 @@ class Database:
             query = query.replace("SET status = ?", "SET status = ?, completed_at = CURRENT_TIMESTAMP")
         
         self.execute_query(query, params)
+    
+    def store_meta_analysis(self, meta_analysis_data: dict) -> int:
+        """
+        Store a meta-analysis result in the database.
+        
+        Args:
+            meta_analysis_data: Dictionary containing meta-analysis information
+            
+        Returns:
+            Meta-analysis ID
+        """
+        query = """
+            INSERT INTO meta_analyses 
+            (session_id, key_patterns, strategic_themes, priority_actions, goal_alignment,
+             implementation_roadmap, executive_summary, reform_opportunities, implementation_challenges,
+             stakeholder_impact, resource_requirements, risk_assessment, quick_wins, long_term_strategy,
+             processing_time, success, error_message)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """
+        
+        params = (
+            meta_analysis_data['session_id'],
+            meta_analysis_data.get('key_patterns'),  # JSON string
+            meta_analysis_data.get('strategic_themes'),  # JSON string
+            meta_analysis_data.get('priority_actions'),  # JSON string
+            meta_analysis_data.get('goal_alignment'),
+            meta_analysis_data.get('implementation_roadmap'),
+            meta_analysis_data.get('executive_summary'),
+            meta_analysis_data.get('reform_opportunities'),  # JSON string
+            meta_analysis_data.get('implementation_challenges'),  # JSON string
+            meta_analysis_data.get('stakeholder_impact'),
+            meta_analysis_data.get('resource_requirements'),
+            meta_analysis_data.get('risk_assessment'),
+            meta_analysis_data.get('quick_wins'),  # JSON string
+            meta_analysis_data.get('long_term_strategy'),
+            meta_analysis_data.get('processing_time', 0.0),
+            meta_analysis_data.get('success', True),
+            meta_analysis_data.get('error_message')
+        )
+        
+        with self.get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute(query, params)
+            conn.commit()
+            return cursor.lastrowid
+    
+    def get_meta_analysis_by_session(self, session_id: str) -> Optional[dict]:
+        """
+        Get meta-analysis result for a specific session.
+        
+        Args:
+            session_id: Session identifier
+            
+        Returns:
+            Meta-analysis dictionary or None if not found
+        """
+        query = "SELECT * FROM meta_analyses WHERE session_id = ? ORDER BY created_at DESC LIMIT 1"
+        results = self.execute_query(query, (session_id,))
+        
+        if results:
+            return dict(results[0])
+        return None

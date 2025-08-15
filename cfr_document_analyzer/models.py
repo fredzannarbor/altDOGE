@@ -149,6 +149,34 @@ class DOGEAnalysis:
 
 
 @dataclass
+class MetaAnalysis:
+    """Meta-analysis results synthesizing multiple document analyses."""
+    session_id: str
+    key_patterns: List[str] = field(default_factory=list)
+    strategic_themes: List[str] = field(default_factory=list)
+    priority_actions: List[str] = field(default_factory=list)
+    goal_alignment: Optional[str] = None
+    implementation_roadmap: Optional[str] = None
+    executive_summary: Optional[str] = None
+    reform_opportunities: List[str] = field(default_factory=list)
+    implementation_challenges: List[str] = field(default_factory=list)
+    stakeholder_impact: Optional[str] = None
+    resource_requirements: Optional[str] = None
+    risk_assessment: Optional[str] = None
+    quick_wins: List[str] = field(default_factory=list)
+    long_term_strategy: Optional[str] = None
+    processing_time: float = 0.0
+    success: bool = True
+    error_message: Optional[str] = None
+    created_at: Optional[datetime] = None
+
+    def __post_init__(self):
+        """Validate meta-analysis data after initialization."""
+        if not self.success and not self.error_message:
+            raise ValueError("Error message required when meta-analysis unsuccessful")
+
+
+@dataclass
 class ExportConfig:
     """Configuration for exporting analysis results."""
     format: str  # json, csv, html

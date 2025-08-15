@@ -16,7 +16,7 @@ from dataclasses import dataclass
 from nimble_llm_caller import LLMCaller, LLMRequest
 
 from .config import Config
-from .models import DOGEAnalysis, RegulationCategory
+from .models import DOGEAnalysis, RegulationCategory, MetaAnalysis
 from .utils import truncate_text, safe_json_loads
 
 
@@ -373,3 +373,286 @@ Regulation text:
         """Reset usage statistics."""
         self.usage_stats = LLMUsageStats()
         logger.info("Usage statistics reset")
+    
+    def perform_meta_analysis(self, analysis_results: List[Dict[str, Any]], session_id: str = None) -> MetaAnalysis:
+        """
+        Perform meta-analysis on a collection of document analysis results.
+        
+        Args:
+            analysis_results: List of analysis result dictionaries
+            session_id: Session identifier for tracking
+            
+        Returns:
+            MetaAnalysis object with synthesized insights
+        """
+        start_time = time.time()
+        
+        try:
+            if not analysis_results:
+                return MetaAnalysis(
+                    session_id=session_id or "unknown",
+                    success=False,
+                    error_message="No analysis results provided for meta-analysis",
+                    processing_time=time.time() - start_time
+                )
+            
+            # Prepare analysis data for meta-analysis
+            analysis_summary = self._prepare_analysis_summary(analysis_results)
+            
+            logger.info(f"Performing meta-analysis on {len(analysis_results)} document analyses")
+            
+            # Use strategic insights prompt for meta-analysis
+            strategic_prompt = """You are analyzing a collection of regulatory document analyses to provide strategic insights and recommendations.
+
+Based on the following analysis results, provide a comprehensive meta-analysis that synthesizes patterns, identifies key themes, and recommends strategic actions.
+
+ANALYSIS RESULTS:
+{text}
+
+Provide your meta-analysis in the following structured format:
+
+KEY PATTERNS:
+- [List 3-5 major patterns observed across the analyzed documents]
+
+STRATEGIC THEMES:
+- [Identify 3-5 overarching themes that emerge from the analysis]
+
+PRIORITY ACTIONS:
+- [List 5-7 specific actions ranked by priority and impact]
+
+GOAL ALIGNMENT:
+- [Assess how well current regulations align with stated policy goals]
+
+IMPLEMENTATION ROADMAP:
+- [Provide a high-level roadmap for implementing recommended changes]
+
+SUMMARY:
+[Provide a 2-3 sentence executive summary of the most critical findings]"""
+            
+            # Perform strategic meta-analysis
+            strategic_response, success1, error1 = self.analyze_document(
+                analysis_summary, strategic_prompt, f"meta_analysis_strategic_{session_id}"
+            )
+            
+            # Use reform opportunities prompt for detailed recommendations
+            reform_prompt = """Analyze the following regulatory analysis results to identify reform opportunities and potential challenges.
+
+ANALYSIS DATA:
+{text}
+
+Focus on providing actionable insights in this format:
+
+REFORM OPPORTUNITIES:
+• [List specific opportunities for regulatory reform with expected impact]
+
+IMPLEMENTATION CHALLENGES:
+• [Identify potential obstacles and resistance points]
+
+STAKEHOLDER IMPACT:
+• [Assess impact on different stakeholder groups]
+
+RESOURCE REQUIREMENTS:
+• [Estimate resources needed for implementation]
+
+RISK ASSESSMENT:
+• [Identify key risks and mitigation strategies]
+
+QUICK WINS:
+• [List actions that can be implemented quickly with high impact]
+
+LONG-TERM STRATEGY:
+• [Outline strategic approach for comprehensive reform]"""
+            
+            # Perform reform-focused meta-analysis
+            reform_response, success2, error2 = self.analyze_document(
+                analysis_summary, reform_prompt, f"meta_analysis_reform_{session_id}"
+            )
+            
+            # Parse and combine results
+            if success1 or success2:
+                meta_analysis = self._parse_meta_analysis_response(
+                    strategic_response if success1 else "",
+                    reform_response if success2 else "",
+                    session_id or "unknown"
+                )
+                meta_analysis.processing_time = time.time() - start_time
+                
+                logger.info(f"Meta-analysis completed successfully in {meta_analysis.processing_time:.2f}s")
+                return meta_analysis
+            else:
+                # Both analyses failed
+                error_msg = f"Meta-analysis failed - Strategic: {error1}, Reform: {error2}"
+                return MetaAnalysis(
+                    session_id=session_id or "unknown",
+                    success=False,
+                    error_message=error_msg,
+                    processing_time=time.time() - start_time
+                )
+                
+        except Exception as e:
+            error_msg = f"Meta-analysis failed: {str(e)}"
+            logger.error(error_msg)
+            return MetaAnalysis(
+                session_id=session_id or "unknown",
+                success=False,
+                error_message=error_msg,
+                processing_time=time.time() - start_time
+            )
+    
+    def _prepare_analysis_summary(self, analysis_results: List[Dict[str, Any]]) -> str:
+        """
+        Prepare a summary of analysis results for meta-analysis.
+        
+        Args:
+            analysis_results: List of analysis result dictionaries
+            
+        Returns:
+            Formatted summary string
+        """
+        summary_parts = []
+        
+        # Group by category
+        categories = {}
+        for result in analysis_results:
+            analysis = result.get('analysis', {})
+            category = analysis.get('category', 'UNKNOWN')
+            if category not in categories:
+                categories[category] = []
+            categories[category].append(result)
+        
+        # Add category summary
+        summary_parts.append("CATEGORY DISTRIBUTION:")
+        for category, docs in categories.items():
+            summary_parts.append(f"- {category}: {len(docs)} documents")
+        
+        summary_parts.append("\nKEY FINDINGS BY DOCUMENT:")
+        
+        # Add key findings for each document (limit to prevent token overflow)
+        for i, result in enumerate(analysis_results[:20]):  # Limit to first 20 documents
+            doc_num = result.get('document_number', f'doc_{i}')
+            title = result.get('title', 'Unknown Title')[:100]  # Truncate long titles
+            analysis = result.get('analysis', {})
+            
+            category = analysis.get('category', 'UNKNOWN')
+            statutory_refs = analysis.get('statutory_references', [])
+            recommendations = analysis.get('reform_recommendations', [])
+            
+            summary_parts.append(f"\nDocument {doc_num}: {title}")
+            summary_parts.append(f"  Category: {category}")
+            
+            if statutory_refs:
+                summary_parts.append(f"  Key Statutes: {', '.join(statutory_refs[:3])}")  # First 3 refs
+            
+            if recommendations:
+                summary_parts.append(f"  Top Recommendation: {recommendations[0][:150]}")  # First recommendation, truncated
+        
+        if len(analysis_results) > 20:
+            summary_parts.append(f"\n[... and {len(analysis_results) - 20} more documents]")
+        
+        return "\n".join(summary_parts)
+    
+    def _parse_meta_analysis_response(self, strategic_response: str, reform_response: str, session_id: str) -> MetaAnalysis:
+        """
+        Parse meta-analysis responses into structured MetaAnalysis object.
+        
+        Args:
+            strategic_response: Response from strategic analysis prompt
+            reform_response: Response from reform analysis prompt
+            session_id: Session identifier
+            
+        Returns:
+            MetaAnalysis object with parsed results
+        """
+        try:
+            meta_analysis = MetaAnalysis(session_id=session_id)
+            
+            # Parse strategic response
+            if strategic_response:
+                # Extract key patterns
+                patterns_match = re.search(r'KEY PATTERNS:(.*?)(?=STRATEGIC THEMES:|$)', strategic_response, re.DOTALL | re.IGNORECASE)
+                if patterns_match:
+                    patterns_text = patterns_match.group(1)
+                    patterns = re.findall(r'-\s*(.+)', patterns_text)
+                    meta_analysis.key_patterns = [p.strip() for p in patterns if p.strip()]
+                
+                # Extract strategic themes
+                themes_match = re.search(r'STRATEGIC THEMES:(.*?)(?=PRIORITY ACTIONS:|$)', strategic_response, re.DOTALL | re.IGNORECASE)
+                if themes_match:
+                    themes_text = themes_match.group(1)
+                    themes = re.findall(r'-\s*(.+)', themes_text)
+                    meta_analysis.strategic_themes = [t.strip() for t in themes if t.strip()]
+                
+                # Extract priority actions
+                actions_match = re.search(r'PRIORITY ACTIONS:(.*?)(?=GOAL ALIGNMENT:|$)', strategic_response, re.DOTALL | re.IGNORECASE)
+                if actions_match:
+                    actions_text = actions_match.group(1)
+                    actions = re.findall(r'-\s*(.+)', actions_text)
+                    meta_analysis.priority_actions = [a.strip() for a in actions if a.strip()]
+                
+                # Extract goal alignment
+                goal_match = re.search(r'GOAL ALIGNMENT:(.*?)(?=IMPLEMENTATION ROADMAP:|$)', strategic_response, re.DOTALL | re.IGNORECASE)
+                if goal_match:
+                    meta_analysis.goal_alignment = goal_match.group(1).strip()
+                
+                # Extract implementation roadmap
+                roadmap_match = re.search(r'IMPLEMENTATION ROADMAP:(.*?)(?=SUMMARY:|$)', strategic_response, re.DOTALL | re.IGNORECASE)
+                if roadmap_match:
+                    meta_analysis.implementation_roadmap = roadmap_match.group(1).strip()
+                
+                # Extract executive summary
+                summary_match = re.search(r'SUMMARY:(.*?)$', strategic_response, re.DOTALL | re.IGNORECASE)
+                if summary_match:
+                    meta_analysis.executive_summary = summary_match.group(1).strip()
+            
+            # Parse reform response
+            if reform_response:
+                # Extract reform opportunities
+                opportunities_match = re.search(r'REFORM OPPORTUNITIES:(.*?)(?=IMPLEMENTATION CHALLENGES:|$)', reform_response, re.DOTALL | re.IGNORECASE)
+                if opportunities_match:
+                    opportunities_text = opportunities_match.group(1)
+                    opportunities = re.findall(r'•\s*(.+)', opportunities_text)
+                    meta_analysis.reform_opportunities = [o.strip() for o in opportunities if o.strip()]
+                
+                # Extract implementation challenges
+                challenges_match = re.search(r'IMPLEMENTATION CHALLENGES:(.*?)(?=STAKEHOLDER IMPACT:|$)', reform_response, re.DOTALL | re.IGNORECASE)
+                if challenges_match:
+                    challenges_text = challenges_match.group(1)
+                    challenges = re.findall(r'•\s*(.+)', challenges_text)
+                    meta_analysis.implementation_challenges = [c.strip() for c in challenges if c.strip()]
+                
+                # Extract stakeholder impact
+                stakeholder_match = re.search(r'STAKEHOLDER IMPACT:(.*?)(?=RESOURCE REQUIREMENTS:|$)', reform_response, re.DOTALL | re.IGNORECASE)
+                if stakeholder_match:
+                    meta_analysis.stakeholder_impact = stakeholder_match.group(1).strip()
+                
+                # Extract resource requirements
+                resources_match = re.search(r'RESOURCE REQUIREMENTS:(.*?)(?=RISK ASSESSMENT:|$)', reform_response, re.DOTALL | re.IGNORECASE)
+                if resources_match:
+                    meta_analysis.resource_requirements = resources_match.group(1).strip()
+                
+                # Extract risk assessment
+                risk_match = re.search(r'RISK ASSESSMENT:(.*?)(?=QUICK WINS:|$)', reform_response, re.DOTALL | re.IGNORECASE)
+                if risk_match:
+                    meta_analysis.risk_assessment = risk_match.group(1).strip()
+                
+                # Extract quick wins
+                wins_match = re.search(r'QUICK WINS:(.*?)(?=LONG-TERM STRATEGY:|$)', reform_response, re.DOTALL | re.IGNORECASE)
+                if wins_match:
+                    wins_text = wins_match.group(1)
+                    wins = re.findall(r'•\s*(.+)', wins_text)
+                    meta_analysis.quick_wins = [w.strip() for w in wins if w.strip()]
+                
+                # Extract long-term strategy
+                strategy_match = re.search(r'LONG-TERM STRATEGY:(.*?)$', reform_response, re.DOTALL | re.IGNORECASE)
+                if strategy_match:
+                    meta_analysis.long_term_strategy = strategy_match.group(1).strip()
+            
+            return meta_analysis
+            
+        except Exception as e:
+            logger.error(f"Error parsing meta-analysis response: {e}")
+            return MetaAnalysis(
+                session_id=session_id,
+                success=False,
+                error_message=f"Parsing failed: {str(e)}"
+            )

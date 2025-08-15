@@ -635,3 +635,388 @@ For questions about this analysis or to provide feedback, please contact the reg
         
         logger.info(f"Created agency presentation summary: {filepath}")
         return str(filepath)
+    
+    def _generate_pdf_report(self, results: List[Dict[str, Any]], session_id: str, 
+                           output_dir: Path, base_filename: str) -> Optional[Path]:
+        """
+        Generate PDF report from HTML content.
+        
+        Args:
+            results: Analysis results
+            session_id: Session identifier
+            output_dir: Output directory
+            base_filename: Base filename
+            
+        Returns:
+            Path to generated PDF or None if failed
+        """
+        try:
+            # Try to import weasyprint for PDF generation
+            try:
+                from weasyprint import HTML, CSS
+            except ImportError:
+                logger.warning("weasyprint not available, skipping PDF generation")
+                return None
+            
+            # Generate HTML content
+            html_content = self._generate_html_report(results, session_id)
+            
+            # Add PDF-specific CSS
+            pdf_css = CSS(string="""
+                @page {
+                    margin: 2cm;
+                    @bottom-center {
+                        content: "Page " counter(page) " of " counter(pages);
+                    }
+                }
+                body {
+                    font-size: 12px;
+                    line-height: 1.4;
+                }
+                .document {
+                    page-break-inside: avoid;
+                    margin-bottom: 15px;
+                }
+                h1, h2, h3 {
+                    page-break-after: avoid;
+                }
+            """)
+            
+            # Generate PDF
+            pdf_path = output_dir / f"{base_filename}.pdf"
+            HTML(string=html_content).write_pdf(pdf_path, stylesheets=[pdf_css])
+            
+            return pdf_path
+            
+        except Exception as e:
+            logger.error(f"PDF generation failed: {e}")
+            return None
+    
+    def _generate_visualizations(self, results: List[Dict[str, Any]], session_id: str,
+                               output_dir: Path, base_filename: str) -> Dict[str, str]:
+        """
+        Generate visualization charts for analysis results.
+        
+        Args:
+            results: Analysis results
+            session_id: Session identifier
+            output_dir: Output directory
+            base_filename: Base filename
+            
+        Returns:
+            Dictionary mapping visualization type to file path
+        """
+        viz_files = {}
+        
+        try:
+            import matplotlib.pyplot as plt
+            import seaborn as sns
+            import pandas as pd
+            from collections import Counter
+            
+            # Set style
+            plt.style.use('seaborn-v0_8')
+            sns.set_palette("husl")
+            
+            # Prepare data
+            summary = self._generate_summary(results)
+            categories = summary.get('category_breakdown', {})
+            
+            # Create visualizations directory
+            viz_dir = output_dir / f"{base_filename}_visualizations"
+            viz_dir.mkdir(exist_ok=True)
+            
+            # 1. Category Distribution Pie Chart
+            if categories:
+                plt.figure(figsize=(10, 8))
+                colors = ['#ff9999', '#66b3ff', '#99ff99', '#ffcc99']
+                wedges, texts, autotexts = plt.pie(
+                    categories.values(), 
+                    labels=categories.keys(),
+                    autopct='%1.1f%%',
+                    colors=colors[:len(categories)],
+                    startangle=90
+                )
+                
+                plt.title(f'Document Category Distribution\n{summary.get("agency_name", "Unknown Agency")}', 
+                         fontsize=16, fontweight='bold')
+                
+                # Add legend with descriptions
+                category_descriptions = {
+                    'SR': 'Statutorily Required',
+                    'NSR': 'Not Statutorily Required',
+                    'NRAN': 'Not Required but Agency Needs',
+                    'UNKNOWN': 'Requires Further Analysis'
+                }
+                
+                legend_labels = [f"{cat}: {category_descriptions.get(cat, cat)}" 
+                               for cat in categories.keys()]
+                plt.legend(wedges, legend_labels, loc="center left", bbox_to_anchor=(1, 0, 0.5, 1))
+                
+                plt.tight_layout()
+                pie_path = viz_dir / "category_distribution.png"
+                plt.savefig(pie_path, dpi=300, bbox_inches='tight')
+                plt.close()
+                
+                viz_files['category_pie_chart'] = str(pie_path)
+            
+            # 2. Processing Time Distribution
+            processing_times = []
+            for result in results:
+                analysis = result.get('analysis', {})
+                if analysis.get('success') and analysis.get('processing_time'):
+                    processing_times.append(analysis['processing_time'])
+            
+            if processing_times:
+                plt.figure(figsize=(12, 6))
+                plt.hist(processing_times, bins=20, alpha=0.7, color='skyblue', edgecolor='black')
+                plt.xlabel('Processing Time (seconds)')
+                plt.ylabel('Number of Documents')
+                plt.title(f'Processing Time Distribution\n{summary.get("agency_name", "Unknown Agency")}')
+                plt.grid(True, alpha=0.3)
+                
+                # Add statistics
+                mean_time = sum(processing_times) / len(processing_times)
+                plt.axvline(mean_time, color='red', linestyle='--', 
+                           label=f'Mean: {mean_time:.2f}s')
+                plt.legend()
+                
+                plt.tight_layout()
+                hist_path = viz_dir / "processing_time_distribution.png"
+                plt.savefig(hist_path, dpi=300, bbox_inches='tight')
+                plt.close()
+                
+                viz_files['processing_time_histogram'] = str(hist_path)
+            
+            # 3. Success Rate Visualization
+            successful = sum(1 for result in results 
+                           if result.get('analysis', {}).get('success', False))
+            failed = len(results) - successful
+            
+            if successful > 0 or failed > 0:
+                plt.figure(figsize=(8, 6))
+                success_data = [successful, failed]
+                success_labels = ['Successful', 'Failed']
+                colors = ['#2ecc71', '#e74c3c']
+                
+                plt.pie(success_data, labels=success_labels, autopct='%1.1f%%', 
+                       colors=colors, startangle=90)
+                plt.title(f'Analysis Success Rate\n{summary.get("agency_name", "Unknown Agency")}')
+                
+                plt.tight_layout()
+                success_path = viz_dir / "success_rate.png"
+                plt.savefig(success_path, dpi=300, bbox_inches='tight')
+                plt.close()
+                
+                viz_files['success_rate_chart'] = str(success_path)
+            
+            # 4. Document Timeline (if publication dates available)
+            pub_dates = []
+            for result in results:
+                pub_date = result.get('publication_date')
+                if pub_date:
+                    try:
+                        # Try to parse date
+                        from datetime import datetime
+                        date_obj = datetime.strptime(pub_date, '%Y-%m-%d')
+                        pub_dates.append(date_obj)
+                    except:
+                        continue
+            
+            if len(pub_dates) > 5:  # Only create if we have enough data points
+                plt.figure(figsize=(12, 6))
+                
+                # Group by month
+                date_counts = Counter(date.strftime('%Y-%m') for date in pub_dates)
+                sorted_dates = sorted(date_counts.items())
+                
+                dates, counts = zip(*sorted_dates)
+                plt.plot(dates, counts, marker='o', linewidth=2, markersize=6)
+                plt.xlabel('Publication Date')
+                plt.ylabel('Number of Documents')
+                plt.title(f'Document Publication Timeline\n{summary.get("agency_name", "Unknown Agency")}')
+                plt.xticks(rotation=45)
+                plt.grid(True, alpha=0.3)
+                
+                plt.tight_layout()
+                timeline_path = viz_dir / "publication_timeline.png"
+                plt.savefig(timeline_path, dpi=300, bbox_inches='tight')
+                plt.close()
+                
+                viz_files['publication_timeline'] = str(timeline_path)
+            
+            # 5. Reform Recommendations Word Cloud (if available)
+            try:
+                from wordcloud import WordCloud
+                
+                # Collect all reform recommendations
+                all_recommendations = []
+                for result in results:
+                    analysis = result.get('analysis', {})
+                    recommendations = analysis.get('reform_recommendations', [])
+                    all_recommendations.extend(recommendations)
+                
+                if all_recommendations:
+                    # Combine all recommendations
+                    text = ' '.join(all_recommendations)
+                    
+                    # Generate word cloud
+                    wordcloud = WordCloud(
+                        width=800, height=400,
+                        background_color='white',
+                        colormap='viridis',
+                        max_words=100
+                    ).generate(text)
+                    
+                    plt.figure(figsize=(12, 6))
+                    plt.imshow(wordcloud, interpolation='bilinear')
+                    plt.axis('off')
+                    plt.title(f'Reform Recommendations Word Cloud\n{summary.get("agency_name", "Unknown Agency")}')
+                    
+                    plt.tight_layout()
+                    wordcloud_path = viz_dir / "reform_recommendations_wordcloud.png"
+                    plt.savefig(wordcloud_path, dpi=300, bbox_inches='tight')
+                    plt.close()
+                    
+                    viz_files['reform_wordcloud'] = str(wordcloud_path)
+                    
+            except ImportError:
+                logger.info("wordcloud package not available, skipping word cloud generation")
+            
+            logger.info(f"Generated {len(viz_files)} visualizations in {viz_dir}")
+            
+        except ImportError as e:
+            logger.warning(f"Visualization libraries not available: {e}")
+        except Exception as e:
+            logger.error(f"Visualization generation failed: {e}")
+        
+        return viz_files
+    
+    def export_comprehensive_report(self, results: List[Dict[str, Any]], session_id: str,
+                                  include_visualizations: bool = True,
+                                  include_pdf: bool = True) -> Dict[str, str]:
+        """
+        Export a comprehensive report with all available formats and enhancements.
+        
+        Args:
+            results: Analysis results
+            session_id: Session identifier
+            include_visualizations: Whether to generate visualizations
+            include_pdf: Whether to generate PDF
+            
+        Returns:
+            Dictionary mapping format to output file path
+        """
+        if not results:
+            logger.warning("No results to export")
+            return {}
+        
+        # Determine formats
+        formats = ['json', 'csv', 'html']
+        if include_pdf:
+            formats.append('pdf')
+        if include_visualizations:
+            formats.append('visualizations')
+        
+        # Export using enhanced export method
+        return self.export_session_results(results, session_id, formats)
+    
+    def create_executive_summary(self, results: List[Dict[str, Any]], session_id: str) -> str:
+        """
+        Create a concise executive summary for leadership.
+        
+        Args:
+            results: Analysis results
+            session_id: Session identifier
+            
+        Returns:
+            Path to generated executive summary
+        """
+        if not results:
+            return ""
+        
+        summary = self._generate_summary(results)
+        timestamp = format_timestamp()
+        agency_name = clean_filename(summary.get('agency_name', 'Unknown_Agency'))
+        
+        filename = f"executive_summary_{agency_name}_{timestamp}.md"
+        filepath = self.output_dir / filename
+        
+        # Calculate key metrics
+        total_docs = summary.get('total_documents', 0)
+        categories = summary.get('category_breakdown', {})
+        
+        # Identify top reform opportunities
+        reform_themes = Counter()
+        for result in results:
+            analysis = result.get('analysis', {})
+            recommendations = analysis.get('reform_recommendations', [])
+            for rec in recommendations:
+                # Extract key themes
+                rec_lower = rec.lower()
+                if 'simplif' in rec_lower:
+                    reform_themes['Simplification'] += 1
+                if 'modern' in rec_lower:
+                    reform_themes['Modernization'] += 1
+                if 'harmon' in rec_lower:
+                    reform_themes['Harmonization'] += 1
+                if 'delet' in rec_lower or 'remov' in rec_lower:
+                    reform_themes['Elimination'] += 1
+        
+        content = f"""# Executive Summary: {summary.get('agency_name', 'Unknown Agency')}
+
+**Analysis Date:** {datetime.now().strftime('%Y-%m-%d')}  
+**Session ID:** {session_id}  
+**Documents Analyzed:** {total_docs}
+
+## Key Findings
+
+### Regulatory Categorization
+"""
+        
+        for category, count in categories.items():
+            percentage = (count / total_docs) * 100
+            category_name = {
+                'SR': 'Statutorily Required',
+                'NSR': 'Not Statutorily Required',
+                'NRAN': 'Not Required but Agency Needs',
+                'UNKNOWN': 'Requires Further Analysis'
+            }.get(category, category)
+            
+            content += f"- **{category_name}**: {count} documents ({percentage:.1f}%)\n"
+        
+        content += f"""
+### Performance Metrics
+- **Analysis Success Rate**: {summary.get('success_rate', 0):.1f}%
+- **Average Processing Time**: {summary.get('average_processing_time', 0):.2f} seconds per document
+- **Total Analysis Time**: {summary.get('total_processing_time', 0):.1f} seconds
+
+### Top Reform Opportunities
+"""
+        
+        for theme, count in reform_themes.most_common(5):
+            content += f"- **{theme}**: {count} recommendations\n"
+        
+        content += f"""
+## Strategic Recommendations
+
+1. **Immediate Actions**: Focus on {categories.get('NSR', 0)} regulations identified as Not Statutorily Required
+2. **Process Improvements**: Address {categories.get('NRAN', 0)} regulations that may be streamlined while maintaining agency needs
+3. **Further Review**: Investigate {categories.get('UNKNOWN', 0)} regulations requiring additional analysis
+
+## Next Steps
+
+1. **Leadership Review**: Present findings to agency leadership for strategic direction
+2. **Stakeholder Engagement**: Consult with affected stakeholders on proposed changes
+3. **Implementation Planning**: Develop detailed implementation timeline for approved reforms
+4. **Monitoring**: Establish metrics to track reform progress and impact
+
+---
+*This executive summary provides a high-level overview. Detailed analysis and recommendations are available in the full report.*
+"""
+        
+        with open(filepath, 'w', encoding='utf-8') as f:
+            f.write(content)
+        
+        logger.info(f"Created executive summary: {filepath}")
+        return str(filepath)
