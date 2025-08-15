@@ -1,0 +1,77 @@
+version: '3.8'
+
+services:
+  cfr-analyzer:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    container_name: cfr-document-analyzer
+    ports:
+      - "8501:8501"  # Streamlit web interface
+    environment:
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - CFR_DATABASE_PATH=/app/data/cfr_analyzer.db
+      - CFR_OUTPUT_DIRECTORY=/app/results
+      - CFR_LOG_LEVEL=INFO
+    volumes:
+      - ./data:/app/data
+      - ./results:/app/results
+      - ./logs:/app/logs
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8501/_stcore/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  cfr-analyzer-cli:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    container_name: cfr-analyzer-cli
+    environment:
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - CFR_DATABASE_PATH=/app/data/cfr_analyzer.db
+      - CFR_OUTPUT_DIRECTORY=/app/results
+      - CFR_LOG_LEVEL=INFO
+    volumes:
+      - ./data:/app/data
+      - ./results:/app/results
+      - ./logs:/app/logs
+    entrypoint: ["/app/docker/entrypoint.sh", "cli"]
+    profiles:
+      - cli
+    stdin_open: true
+    tty: true
+
+  cfr-analyzer-dev:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    container_name: cfr-analyzer-dev
+    ports:
+      - "8501:8501"
+    environment:
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - CFR_DATABASE_PATH=/app/data/cfr_analyzer.db
+      - CFR_OUTPUT_DIRECTORY=/app/results
+      - CFR_LOG_LEVEL=DEBUG
+    volumes:
+      - .:/app
+      - ./data:/app/data
+      - ./results:/app/results
+      - ./logs:/app/logs
+    entrypoint: ["/app/docker/entrypoint.sh", "shell"]
+    profiles:
+      - dev
+    stdin_open: true
+    tty: true
+
+volumes:
+  cfr_data:
+    driver: local
+  cfr_results:
+    driver: local
+  cfr_logs:
+    driver: local
